@@ -1,0 +1,15 @@
+<component name="libraryTable">
+  <library name="commons-cli-1.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../../../../Libraries/Java/xuggler/commons-cli-1.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../Libraries/Java/xuggler/xuggle-xuggler-5.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../Libraries/Java/xuggler/logback-classic-1.0.0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../Libraries/Java/xuggler/slf4j-api-1.6.4.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../Libraries/Java/xuggler/xuggle-utils-1.22.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../Libraries/Java/xuggler/junit-4.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/../../../../../Libraries/Java/xuggler/logback-core-1.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
