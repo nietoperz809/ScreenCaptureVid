@@ -26,6 +26,14 @@ public class ScreenVidCapture {
     private JLabel label2;
     private JTextField textfield;
 
+    int halfbut2 (int i)
+    {
+        int ret = i/2;
+        if (ret%2 == 1)
+            ret++;
+        return ret;
+    }
+
     public ScreenVidCapture () throws Exception {
         stopButton.setEnabled (false);
 
@@ -38,9 +46,9 @@ public class ScreenVidCapture {
             System.out.println (file);
             writer = ToolFactory.makeWriter (file);
             writer.addVideoStream(0, 0,
-                    ICodec.ID.CODEC_ID_MPEG4,
-                    screenRect.width / 2,
-                    screenRect.height / 2);
+                    /* ICodec.ID.CODEC_ID_MPEG4 */  ICodec.ID.CODEC_ID_H264,
+                    halfbut2 (screenRect.width),
+                    halfbut2 (screenRect.height));
             running = true;
         });
 
@@ -57,15 +65,15 @@ public class ScreenVidCapture {
                 try {
                     if (running) {
                         BufferedImage image = robot.createScreenCapture (screenRect);
-                        list.add (image);
+                        BufferedImage bgrScreen = convertToType (image, BufferedImage.TYPE_3BYTE_BGR);
+                        list.add (bgrScreen);
                         pics++;
                         label.setText ("" + pics);
                     }
                     if (makevid) {
                         for (int index = 1; index <= list.size (); index++) {
-                            BufferedImage screen = list.get (index-1);
-                            BufferedImage bgrScreen = convertToType (screen, BufferedImage.TYPE_3BYTE_BGR);
-                            writer.encodeVideo (0, bgrScreen, 300 * index, TimeUnit.MILLISECONDS);
+                            writer.encodeVideo (0, list.get (index-1),
+                                    100 * index, TimeUnit.MILLISECONDS);
                             if (--pics == 0) {
                                 startButton.setEnabled (true);
                             }
@@ -81,7 +89,7 @@ public class ScreenVidCapture {
                     e.printStackTrace ();
                 }
             }
-        }, 0, 50);
+        }, 0, 100);
     }
 
     public static BufferedImage convertToType (BufferedImage sourceImage, int targetType) {
