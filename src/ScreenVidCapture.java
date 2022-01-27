@@ -6,7 +6,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -20,10 +19,8 @@ public class ScreenVidCapture {
     boolean running = false;
     boolean makevid = false;
     IMediaWriter writer;
-    ArrayList<BufferedImage> list = new ArrayList<> ();
     private JPanel meinpanel;
     private JLabel label;
-    private JLabel label2;
     private JTextField textfield;
 
     int halfbut2 (int i)
@@ -65,25 +62,16 @@ public class ScreenVidCapture {
                 try {
                     if (running) {
                         BufferedImage image = robot.createScreenCapture (screenRect);
-                        BufferedImage bgrScreen = convertToType (image, BufferedImage.TYPE_3BYTE_BGR);
-                        list.add (bgrScreen);
+                        BufferedImage bgrScreen = convertBitmap (image, BufferedImage.TYPE_3BYTE_BGR);
                         pics++;
+                        writer.encodeVideo (0, bgrScreen,
+                                100 * pics, TimeUnit.MILLISECONDS);
                         label.setText ("" + pics);
                     }
                     if (makevid) {
-                        for (int index = 1; index <= list.size (); index++) {
-                            writer.encodeVideo (0, list.get (index-1),
-                                    100 * index, TimeUnit.MILLISECONDS);
-                            if (--pics == 0) {
-                                startButton.setEnabled (true);
-                            }
-                            label2.setText (""+pics);
-                        }
-                        list.clear ();
-                        pics = 0;
                         makevid = false;
-                        System.out.println ("done");
                         writer.close ();
+                        startButton.setEnabled (true);
                     }
                 } catch (Exception e) {
                     e.printStackTrace ();
@@ -92,7 +80,7 @@ public class ScreenVidCapture {
         }, 0, 100);
     }
 
-    public static BufferedImage convertToType (BufferedImage sourceImage, int targetType) {
+    public static BufferedImage convertBitmap (BufferedImage sourceImage, int targetType) {
         BufferedImage image;
         if (sourceImage.getType () == targetType) {
             image = sourceImage;
