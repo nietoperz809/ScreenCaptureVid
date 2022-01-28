@@ -59,10 +59,13 @@ public class ScreenVidCapture {
                 try {
                     switch (state.get ()) {
                         case STATE1:
+//                            long time = System.currentTimeMillis ();
                             BufferedImage image = robot.createScreenCapture (screenRect);
                             BufferedImage bgrScreen = convertBitmap (image, BufferedImage.TYPE_3BYTE_BGR);
                             imageCount++;
                             writer.encodeVideo (0, bgrScreen, 300L * imageCount, TimeUnit.MILLISECONDS);
+//                            time = System.currentTimeMillis () - time;
+//                            System.out.println (time);
                             label.setText ("" + imageCount);
                             break;
 
@@ -86,7 +89,11 @@ public class ScreenVidCapture {
         } else {
             image = new BufferedImage (sourceImage.getWidth (),
                     sourceImage.getHeight (), targetType);
-            image.getGraphics ().drawImage (sourceImage, 0, 0, null);
+            Graphics2D g = (Graphics2D) image.getGraphics();
+//            g.setRenderingHint(RenderingHints.KEY_DITHERING, RenderingHints.VALUE_DITHER_DISABLE);
+//            g.setRenderingHint(RenderingHints.KEY_COLOR_RENDERING, RenderingHints.VALUE_COLOR_RENDER_SPEED);
+//            g.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_SPEED);
+            g.drawImage (sourceImage, 0, 0, null);
         }
         return image;
     }
