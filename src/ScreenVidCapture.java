@@ -33,6 +33,7 @@ public class ScreenVidCapture {
 
     public ScreenVidCapture () throws Exception {
         stopButton.setEnabled (false);
+        ToolFactory.setTurboCharged (true);
 
         startButton.addActionListener (e -> {
             System.out.println ("Start");
@@ -65,7 +66,7 @@ public class ScreenVidCapture {
                         BufferedImage bgrScreen = convertBitmap (image, BufferedImage.TYPE_3BYTE_BGR);
                         pics++;
                         writer.encodeVideo (0, bgrScreen,
-                                100 * pics, TimeUnit.MILLISECONDS);
+                                300 * pics, TimeUnit.MILLISECONDS);
                         label.setText ("" + pics);
                     }
                     if (makevid) {
@@ -77,7 +78,7 @@ public class ScreenVidCapture {
                     e.printStackTrace ();
                 }
             }
-        }, 0, 100);
+        }, 0, 200);
     }
 
     public static BufferedImage convertBitmap (BufferedImage sourceImage, int targetType) {
