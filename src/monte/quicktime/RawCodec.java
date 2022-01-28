@@ -10,10 +10,14 @@
  */
 package monte.quicktime;
 
-import org.monte.media.AbstractVideoCodec;
-import org.monte.media.Buffer;
-import org.monte.media.Format;
-import org.monte.media.io.SeekableByteArrayOutputStream;
+import monte.AbstractVideoCodec;
+import monte.Buffer;
+import monte.Format;
+import monte.io.SeekableByteArrayOutputStream;
+//import org.monte.media.AbstractVideoCodec;
+//import org.monte.media.Buffer;
+//import org.monte.media.Format;
+//import org.monte.media.io.SeekableByteArrayOutputStream;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -21,8 +25,12 @@ import java.awt.image.WritableRaster;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import static org.monte.media.BufferFlag.*;
-import static org.monte.media.VideoFormatKeys.*;
+import static monte.BufferFlag.DISCARD;
+import static monte.BufferFlag.KEYFRAME;
+import static monte.FormatKeys.*;
+import static monte.VideoFormatKeys.*;
+//import static org.monte.media.BufferFlag.*;
+//import static org.monte.media.VideoFormatKeys.*;
 
 /**
  * {@code RawCodec} encodes a BufferedImage as a byte[] array.

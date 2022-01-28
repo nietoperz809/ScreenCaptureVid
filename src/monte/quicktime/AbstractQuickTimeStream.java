@@ -10,11 +10,14 @@
  */
 package monte.quicktime;
 
-import org.monte.media.Buffer;
-import org.monte.media.Codec;
-import org.monte.media.Format;
-import org.monte.media.io.ImageOutputStreamAdapter;
-import org.monte.media.math.Rational;
+//import org.monte.media.Buffer;
+//import org.monte.media.Codec;
+//import org.monte.media.Format;
+//import org.monte.media.io.ImageOutputStreamAdapter;
+//import org.monte.media.math.Rational;
+
+import monte.*;
+import monte.io.ImageOutputStreamAdapter;
 
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.IndexColorModel;
@@ -23,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 
-import static org.monte.media.FormatKeys.*;
+//import static org.monte.media.FormatKeys.*;
 
 /**
  * This is the base class for low-level QuickTime stream IO.
@@ -249,7 +252,7 @@ public class AbstractQuickTimeStream {
                 long pointer = getRelativeStreamPosition();
                 seekRelative(offset);
 
-                DataAtomOutputStream headerData = new DataAtomOutputStream(new ImageOutputStreamAdapter(out));
+                DataAtomOutputStream headerData = new DataAtomOutputStream(new ImageOutputStreamAdapter (out));
                 headerData.writeInt((int) size());
                 headerData.writeType(type);
                 for (Atom child : children) {
@@ -664,7 +667,7 @@ public class AbstractQuickTimeStream {
         /**
          * The media type of the track.
          */
-        protected final MediaType mediaType;
+        protected final FormatKeys.MediaType mediaType;
         /**
          * The format of the media in the track.
          */
@@ -741,7 +744,7 @@ public class AbstractQuickTimeStream {
         };
         protected double width, height;
 
-        public Track(MediaType mediaType) {
+        public Track(FormatKeys.MediaType mediaType) {
             this.mediaType = mediaType;
         }
 
@@ -943,7 +946,7 @@ public class AbstractQuickTimeStream {
             // based on such considerations as playback quality, language, or the
             // capabilities of the computer.
 
-            d.writeFixed8D8(mediaType == MediaType.AUDIO ? 1 : 0); // volume
+            d.writeFixed8D8(mediaType == FormatKeys.MediaType.AUDIO ? 1 : 0); // volume
             // A 16-bit fixed-point value that indicates how loudly this track’s
             // sound is to be played. A value of 1.0 indicates normal volume.
 
@@ -963,10 +966,10 @@ public class AbstractQuickTimeStream {
             // See Figure 2-8 for an illustration of a matrix structure:
             // http://developer.apple.com/documentation/QuickTime/QTFF/QTFFChap2/chapter_3_section_3.html#//apple_ref/doc/uid/TP40000939-CH204-32967
 
-            d.writeFixed16D16(mediaType == MediaType.VIDEO ? ((VideoTrack) this).width : 0); // width
+            d.writeFixed16D16(mediaType == FormatKeys.MediaType.VIDEO ? ((VideoTrack) this).width : 0); // width
             // A 32-bit fixed-point number that specifies the width of this track in pixels.
 
-            d.writeFixed16D16(mediaType == MediaType.VIDEO ? ((VideoTrack) this).height : 0); // height
+            d.writeFixed16D16(mediaType == FormatKeys.MediaType.VIDEO ? ((VideoTrack) this).height : 0); // height
             // A 32-bit fixed-point number that indicates the height of this track in pixels.
 
             /* Edit Atom ========= */
@@ -1100,7 +1103,7 @@ public class AbstractQuickTimeStream {
             // two values are valid for this field: 'mhlr' for media handlers and
             // 'dhlr' for data handlers.
 
-            d.writeType(mediaType == MediaType.VIDEO ? "vide" : "soun"); // componentSubtype
+            d.writeType(mediaType == FormatKeys.MediaType.VIDEO ? "vide" : "soun"); // componentSubtype
             // A four-character code that identifies the type of the media handler
             // or data handler. For media handlers, this field defines the type of
             // data—for example, 'vide' for video data or 'soun' for sound data.
@@ -1108,7 +1111,7 @@ public class AbstractQuickTimeStream {
             // For data handlers, this field defines the data reference type—for
             // example, a component subtype value of 'alis' identifies a file alias.
 
-            if (mediaType == MediaType.AUDIO) {
+            if (mediaType == FormatKeys.MediaType.AUDIO) {
                 d.writeType("appl");
             } else {
                 d.writeUInt(0);
@@ -1116,13 +1119,13 @@ public class AbstractQuickTimeStream {
             // componentManufacturer
             // Reserved. Set to 0.
 
-            d.writeUInt(mediaType == MediaType.AUDIO ? 268435456L : 0); // componentFlags
+            d.writeUInt(mediaType == FormatKeys.MediaType.AUDIO ? 268435456L : 0); // componentFlags
             // Reserved. Set to 0.
 
-            d.writeUInt(mediaType == MediaType.AUDIO ? 65941 : 0); // componentFlagsMask
+            d.writeUInt(mediaType == FormatKeys.MediaType.AUDIO ? 65941 : 0); // componentFlagsMask
             // Reserved. Set to 0.
 
-            d.writePString(mediaType == MediaType.AUDIO ? "Apple Sound Media Handler" : ""); // componentName (empty string)
+            d.writePString(mediaType == FormatKeys.MediaType.AUDIO ? "Apple Sound Media Handler" : ""); // componentName (empty string)
             // A (counted) string that specifies the name of the component—that is,
             // the media handler used when this media was created. This field may
             // contain a zero-length (empty) string.
@@ -1180,7 +1183,7 @@ public class AbstractQuickTimeStream {
             // For data handlers, this field defines the data reference type—for
             // example, a component subtype value of 'alis' identifies a file alias.
 
-            if (mediaType == MediaType.AUDIO) {
+            if (mediaType == FormatKeys.MediaType.AUDIO) {
                 d.writeType("appl");
             } else {
                 d.writeUInt(0);
@@ -1188,10 +1191,10 @@ public class AbstractQuickTimeStream {
             // componentManufacturer
             // Reserved. Set to 0.
 
-            d.writeUInt(mediaType == MediaType.AUDIO ? 268435457L : 0); // componentFlags
+            d.writeUInt(mediaType == FormatKeys.MediaType.AUDIO ? 268435457L : 0); // componentFlags
             // Reserved. Set to 0.
 
-            d.writeInt(mediaType == MediaType.AUDIO ? 65967 : 0); // componentFlagsMask
+            d.writeInt(mediaType == FormatKeys.MediaType.AUDIO ? 65967 : 0); // componentFlagsMask
             // Reserved. Set to 0.
 
             d.writePString("Apple Alias Data Handler"); // componentName (empty string)
@@ -1464,7 +1467,7 @@ public class AbstractQuickTimeStream {
             d.write(0); // flag[2]
             // A 3-byte space for time-to-sample flags. Set this field to 0.
 
-            int sampleUnit = mediaType == MediaType.AUDIO//
+            int sampleUnit = mediaType == FormatKeys.MediaType.AUDIO//
                     && ((AudioTrack) this).soundCompressionId != -2 //
                     ? ((AudioTrack) this).soundSampleSize / 8 * ((AudioTrack) this).soundNumberOfChannels//
                     : 1;
@@ -1607,7 +1610,7 @@ public class AbstractQuickTimeStream {
         protected IndexColorModel videoColorTable;
 
         public VideoTrack() {
-            super(MediaType.VIDEO);
+            super(FormatKeys.MediaType.VIDEO);
         }
 
         @Override
@@ -1886,7 +1889,7 @@ public class AbstractQuickTimeStream {
         protected byte[] stsdExtensions = new byte[0];
 
         public AudioTrack() {
-            super(MediaType.AUDIO);
+            super(FormatKeys.MediaType.AUDIO);
         }
 
         @Override

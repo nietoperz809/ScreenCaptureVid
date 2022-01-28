@@ -10,7 +10,9 @@
  */
 package monte.quicktime;
 
-import org.monte.media.io.ImageInputStreamAdapter;
+//import org.monte.media.io.ImageInputStreamAdapter;
+
+import monte.io.ImageInputStreamAdapter;
 
 import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
@@ -261,7 +263,7 @@ public class QuickTimeInputStream extends AbstractQuickTimeStream {
         }
 
         in.seek(0);
-        readAllMetadata(new DataAtomInputStream(new ImageInputStreamAdapter(in)), remainingSize, new HashMap<String, InputAtom>(), null);
+        readAllMetadata(new DataAtomInputStream(new ImageInputStreamAdapter (in)), remainingSize, new HashMap<String, InputAtom>(), null);
     }
 
     private void readAllMetadata(DataAtomInputStream in, long remainingSize, HashMap<String, InputAtom> atoms, String path) throws IOException {

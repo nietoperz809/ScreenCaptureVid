@@ -10,10 +10,14 @@
  */
 package monte.quicktime;
 
-import org.monte.media.AbstractVideoCodec;
-import org.monte.media.Buffer;
-import org.monte.media.Format;
-import org.monte.media.io.ByteArrayImageOutputStream;
+import monte.AbstractVideoCodec;
+import monte.Buffer;
+import monte.Format;
+import monte.io.ByteArrayImageOutputStream;
+//import org.monte.media.AbstractVideoCodec;
+//import org.monte.media.Buffer;
+//import org.monte.media.Format;
+//import org.monte.media.io.ByteArrayImageOutputStream;
 
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
@@ -24,9 +28,14 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.nio.ByteOrder;
 
+import static java.lang.Math.max;
 import static java.lang.Math.min;
-import static org.monte.media.BufferFlag.*;
-import static org.monte.media.VideoFormatKeys.*;
+import static monte.BufferFlag.DISCARD;
+import static monte.BufferFlag.KEYFRAME;
+import static monte.FormatKeys.*;
+import static monte.VideoFormatKeys.*;
+//import static org.monte.media.BufferFlag.*;
+//import static org.monte.media.VideoFormatKeys.*;
 
 /**
  * Implements the Apple Animation codec.

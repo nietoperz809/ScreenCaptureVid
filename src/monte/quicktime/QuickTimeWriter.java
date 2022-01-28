@@ -10,8 +10,9 @@
  */
 package monte.quicktime;
 
-import org.monte.media.*;
-import org.monte.media.math.Rational;
+import monte.*;
+//import org.monte.media.*;
+//import org.monte.media.math.Rational;
 
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.image.BufferedImage;
@@ -20,9 +21,14 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteOrder;
 
-import static org.monte.media.AudioFormatKeys.*;
-import static org.monte.media.BufferFlag.*;
-import static org.monte.media.VideoFormatKeys.*;
+import static monte.AudioFormatKeys.*;
+import static monte.BufferFlag.DISCARD;
+import static monte.BufferFlag.KEYFRAME;
+import static monte.FormatKeys.*;
+import static monte.VideoFormatKeys.*;
+//import static org.monte.media.AudioFormatKeys.*;
+//import static org.monte.media.BufferFlag.*;
+//import static org.monte.media.VideoFormatKeys.*;
 
 /**
  * Supports writing of time-based video and audio data into a QuickTime movie
@@ -482,7 +488,7 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
      * @param image The image of the video frame.
      * @param duration The sampleDuration of the video frame in media time scale units.
      *
-     * @throws IndexOutofBoundsException if the track index is out of bounds.
+    // * @throws IndexOutofBoundsException if the track index is out of bounds.
      * @throws if the duration is less than 1, or if the dimension of the frame
      * does not match the dimension of the video.
      * @throws UnsupportedOperationException if the QuickTimeWriter does not have

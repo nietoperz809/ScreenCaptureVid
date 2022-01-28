@@ -10,18 +10,24 @@
  */
 package monte.quicktime;
 
-import org.monte.media.*;
-import org.monte.media.math.Rational;
+import monte.*;
+//import org.monte.media.*;
+//import org.monte.media.math.Rational;
 
 import javax.imageio.stream.ImageInputStream;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import static org.monte.media.AudioFormatKeys.*;
-import static org.monte.media.BufferFlag.*;
-import static org.monte.media.FormatKeys.*;
-import static org.monte.media.VideoFormatKeys.*;
+import static monte.BufferFlag.DISCARD;
+import static monte.BufferFlag.END_OF_MEDIA;
+import static monte.FormatKeys.*;
+import static monte.VideoFormatKeys.DataClassKey;
+import static monte.VideoFormatKeys.ENCODING_BUFFERED_IMAGE;
+//import static org.monte.media.AudioFormatKeys.*;
+//import static org.monte.media.BufferFlag.*;
+//import static org.monte.media.FormatKeys.*;
+//import static org.monte.media.VideoFormatKeys.*;
 
 /**
  * {@code QuickTimeReader}.
@@ -87,7 +93,7 @@ public class QuickTimeReader extends QuickTimeInputStream implements MovieReader
     public BufferedImage read(int track, BufferedImage img) throws IOException {
         AbstractQuickTimeStream.Track tr = tracks.get(track);
         if (tr.inputBuffer == null) {
-            tr.inputBuffer = new Buffer();
+            tr.inputBuffer = new Buffer ();
         }
         if (tr.codec == null) {
             createCodec(tr);

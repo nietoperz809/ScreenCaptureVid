@@ -10,9 +10,14 @@
  */
 package monte.quicktime;
 
-import org.monte.media.Format;
-import org.monte.media.io.ImageOutputStreamAdapter;
-import org.monte.media.math.Rational;
+//import org.monte.media.Format;
+//import org.monte.media.io.ImageOutputStreamAdapter;
+//import org.monte.media.math.Rational;
+
+import monte.Format;
+import monte.FormatKeys;
+import monte.Rational;
+import monte.io.ImageOutputStreamAdapter;
 
 import javax.imageio.stream.FileImageOutputStream;
 import javax.imageio.stream.ImageOutputStream;
@@ -25,8 +30,11 @@ import java.util.Date;
 import java.util.zip.DeflaterOutputStream;
 
 import static java.lang.Math.max;
-import static org.monte.media.AudioFormatKeys.*;
-import static org.monte.media.VideoFormatKeys.*;
+import static monte.AudioFormatKeys.*;
+import static monte.FormatKeys.*;
+import static monte.VideoFormatKeys.*;
+//import static org.monte.media.AudioFormatKeys.*;
+//import static org.monte.media.VideoFormatKeys.*;
 
 /**
  * This class provides low-level support for writing already encoded audio and
@@ -240,14 +248,14 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
         t.height = height;
         t.videoDepth = depth;
         t.syncInterval = syncInterval;
-        t.format = new Format(
-                MediaTypeKey, MediaType.VIDEO,
+        t.format = new Format (
+                MediaTypeKey, FormatKeys.MediaType.VIDEO,
                 MimeTypeKey, MIME_QUICKTIME,
                 EncodingKey, compressionType,
                 CompressorNameKey, compressorName,
                 DataClassKey, byte[].class,
                 WidthKey, width, HeightKey, height, DepthKey, depth,
-                FrameRateKey, new Rational(timeScale, 1));
+                FrameRateKey, new Rational (timeScale, 1));
         tracks.add(t);
         return tracks.size() - 1;
     }
@@ -607,7 +615,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
      * @param duration The duration of the sample in media time scale units.
      * @param isSync whether the sample is a sync sample (key frame).
      *
-     * @throws IndexOutofBoundsException if the track index is out of bounds.
+     //* @throws IndexOutofBoundsException if the track index is out of bounds.
      * @throws IllegalArgumentException if the track does not support video, if
      * the duration is less than 1, or if the dimension of the frame does not
      * match the dimension of the video.
@@ -1081,7 +1089,7 @@ public class QuickTimeOutputStream extends AbstractQuickTimeStream {
                     writeProlog();
 
                     // 40 bytes compression headers
-                    DataAtomOutputStream daos = new DataAtomOutputStream(new ImageOutputStreamAdapter(out));
+                    DataAtomOutputStream daos = new DataAtomOutputStream(new ImageOutputStreamAdapter (out));
                     daos.writeUInt(headerSize + 40);
                     daos.writeType("moov");
 
