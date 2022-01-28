@@ -9,27 +9,23 @@ import java.io.File;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ScreenVidCapture {
+    static final int STATE0 = 0;
+    static final int STATE1 = 1;
+    static final int STATE2 = 2;
     public JButton startButton;
     public JButton stopButton;
-    Rectangle screenRect = new Rectangle (Toolkit.getDefaultToolkit ().getScreenSize ());
-    Robot robot = new Robot ();
-    int pics;
-    boolean running = false;
-    boolean makevid = false;
+    final Rectangle screenRect = new Rectangle (Toolkit.getDefaultToolkit ().getScreenSize ());
+    final Robot robot = new Robot ();
+    int imageCount;
+    final AtomicInteger state = new AtomicInteger (STATE0);
     IMediaWriter writer;
     private JPanel meinpanel;
     private JLabel label;
     private JTextField textfield;
-
-    int halfbut2 (int i)
-    {
-        int ret = i/2;
-        if (ret%2 == 1)
-            ret++;
-        return ret;
-    }
+    String filename;
 
     public ScreenVidCapture () throws Exception {
         stopButton.setEnabled (false);
@@ -39,40 +35,42 @@ public class ScreenVidCapture {
             System.out.println ("Start");
             stopButton.setEnabled (true);
             startButton.setEnabled (false);
-            String file = textfield.getText () + File.separator +
+            filename = textfield.getText () + File.separator +
                     System.currentTimeMillis () + ".mp4";
-            System.out.println (file);
-            writer = ToolFactory.makeWriter (file);
-            writer.addVideoStream(0, 0,
+            System.out.println (filename);
+            writer = ToolFactory.makeWriter (filename);
+            writer.addVideoStream (0, 0,
                     /* ICodec.ID.CODEC_ID_MPEG4 */  ICodec.ID.CODEC_ID_H264,
                     halfbut2 (screenRect.width),
                     halfbut2 (screenRect.height));
-            running = true;
+            imageCount = 0;
+            state.set (STATE1);
         });
 
         stopButton.addActionListener (e -> {
             System.out.println ("Stop");
             stopButton.setEnabled (false);
-            running = false;
-            makevid = true;
+            state.set (STATE2);
         });
 
         new Timer ().scheduleAtFixedRate (new TimerTask () {
             @Override
             public void run () {
                 try {
-                    if (running) {
-                        BufferedImage image = robot.createScreenCapture (screenRect);
-                        BufferedImage bgrScreen = convertBitmap (image, BufferedImage.TYPE_3BYTE_BGR);
-                        pics++;
-                        writer.encodeVideo (0, bgrScreen,
-                                300 * pics, TimeUnit.MILLISECONDS);
-                        label.setText ("" + pics);
-                    }
-                    if (makevid) {
-                        makevid = false;
-                        writer.close ();
-                        startButton.setEnabled (true);
+                    switch (state.get ()) {
+                        case STATE1:
+                            BufferedImage image = robot.createScreenCapture (screenRect);
+                            BufferedImage bgrScreen = convertBitmap (image, BufferedImage.TYPE_3BYTE_BGR);
+                            imageCount++;
+                            writer.encodeVideo (0, bgrScreen, 300L * imageCount, TimeUnit.MILLISECONDS);
+                            label.setText ("" + imageCount);
+                            break;
+
+                        case STATE2:
+                            state.set (STATE0);
+                            writer.close ();
+                            startButton.setEnabled (true);
+                            break;
                     }
                 } catch (Exception e) {
                     e.printStackTrace ();
@@ -99,6 +97,13 @@ public class ScreenVidCapture {
         frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
         frame.pack ();
         frame.setVisible (true);
+    }
+
+    int halfbut2 (int i) {
+        int ret = i / 2;
+        if (ret % 2 == 1)
+            ret++;
+        return ret;
     }
 
     private void createUIComponents () {
