@@ -8,15 +8,12 @@
  * license agreement you entered into with Werner Randelshofer.
  * For details see accompanying license terms.
  */
-package monte.quicktime;
+package monte;
 
 //import org.monte.media.Format;
 //import org.monte.media.io.ImageOutputStreamAdapter;
 //import org.monte.media.math.Rational;
 
-import monte.Format;
-import monte.FormatKeys;
-import monte.Rational;
 import monte.io.ImageOutputStreamAdapter;
 
 import javax.imageio.stream.FileImageOutputStream;
@@ -31,7 +28,6 @@ import java.util.zip.DeflaterOutputStream;
 
 import static java.lang.Math.max;
 import static monte.AudioFormatKeys.*;
-import static monte.FormatKeys.*;
 import static monte.VideoFormatKeys.*;
 //import static org.monte.media.AudioFormatKeys.*;
 //import static org.monte.media.VideoFormatKeys.*;

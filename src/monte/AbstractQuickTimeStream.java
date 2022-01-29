@@ -8,7 +8,7 @@
  * license agreement you entered into with Werner Randelshofer.
  * For details see accompanying license terms.
  */
-package monte.quicktime;
+package monte;
 
 //import org.monte.media.Buffer;
 //import org.monte.media.Codec;
@@ -16,7 +16,6 @@ package monte.quicktime;
 //import org.monte.media.io.ImageOutputStreamAdapter;
 //import org.monte.media.math.Rational;
 
-import monte.*;
 import monte.io.ImageOutputStreamAdapter;
 
 import javax.imageio.stream.ImageOutputStream;

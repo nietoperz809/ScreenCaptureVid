@@ -25,9 +25,6 @@ import org.monte.media.image.Images;
 import org.monte.media.quicktime.QuickTimeWriter;
 */
 
-import monte.avi.TechSmithCodec;
-import monte.quicktime.QuickTimeWriter;
-
 import javax.sound.sampled.*;
 import javax.swing.*;
 import java.awt.*;
@@ -47,7 +44,6 @@ import java.util.concurrent.*;
 import static java.lang.Math.max;
 import static monte.AudioFormatKeys.*;
 import static monte.BufferFlag.SAME_DATA;
-import static monte.FormatKeys.*;
 import static monte.VideoFormatKeys.*;
 /*
 import static org.monte.media.AudioFormatKeys.*;

@@ -8,7 +8,7 @@
  * license agreement you entered into with Werner Randelshofer.
  * For details see accompanying license terms.
  */
-package monte.avi;
+package monte;
 
 //import org.monte.media.AbstractVideoCodec;
 //import org.monte.media.Buffer;

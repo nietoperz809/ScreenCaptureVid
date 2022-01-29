@@ -8,9 +8,8 @@
  * license agreement you entered into with Werner Randelshofer.
  * For details see accompanying license terms.
  */
-package monte.quicktime;
+package monte;
 
-import monte.*;
 //import org.monte.media.*;
 //import org.monte.media.math.Rational;
 
@@ -24,8 +23,7 @@ import java.nio.ByteOrder;
 import static monte.AudioFormatKeys.*;
 import static monte.BufferFlag.DISCARD;
 import static monte.BufferFlag.KEYFRAME;
-import static monte.FormatKeys.*;
-import static monte.VideoFormatKeys.*;
+        import static monte.VideoFormatKeys.*;
 //import static org.monte.media.AudioFormatKeys.*;
 //import static org.monte.media.BufferFlag.*;
 //import static org.monte.media.VideoFormatKeys.*;

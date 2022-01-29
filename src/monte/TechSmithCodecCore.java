@@ -8,15 +8,14 @@
  * license agreement you entered into with Werner Randelshofer.
  * For details see accompanying license terms.
  */
-package monte.avi;
+package monte;
 
 //import org.monte.media.AbstractVideoCodecCore;
 //import org.monte.media.io.ByteArrayImageInputStream;
 //import org.monte.media.io.ByteArrayImageOutputStream;
 //import org.monte.media.io.UncachedImageInputStream;
 
-import monte.AbstractVideoCodecCore;
-import monte.io.ByteArrayImageInputStream;
+//import monte.io.ByteArrayImageInputStream;
 import monte.io.ByteArrayImageOutputStream;
 import monte.io.UncachedImageInputStream;
 
@@ -196,29 +195,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
         return palette;
     }
 
-    /** Decodes an AVI palette change chunk. 
-     * FIXME - This could be moved out into a separate class.
-     */
-    public void decodePalette(byte[] inDat, int off, int len) throws IOException {
-        getPalette();
-        ByteArrayImageInputStream in = new ByteArrayImageInputStream(inDat, off, len, ByteOrder.LITTLE_ENDIAN);
-        int firstEntry = in.readUnsignedByte();
-        int numEntries = in.readUnsignedByte();
-        if (numEntries == 0) {
-            numEntries = 256;
-        }
-        int flags = in.readUnsignedShort();
-        if (firstEntry + numEntries > 256) {
-            throw new IOException("Illegal headers in pc chunk. firstEntry=" + firstEntry + ", numEntries=" + numEntries);
-        }
-        in.setByteOrder(ByteOrder.BIG_ENDIAN);
-        for (int i = 0; i < numEntries; i++) {
-            int rgbf = in.readInt();
-            palette[i + firstEntry] = rgbf >> 8;
-        }
-    }
-
-    /** Decodes to 8-bit palettised. 
+    /** Decodes to 8-bit palettised.
      * Returns true if a key-frame was decoded.
      * 
      * 

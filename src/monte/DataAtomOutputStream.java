@@ -8,7 +8,7 @@
  * license agreement you entered into with Werner Randelshofer.
  * For details see accompanying license terms.
  */
-package monte.quicktime;
+package monte;
 
 import javax.imageio.stream.ImageOutputStreamImpl;
 import java.io.*;
