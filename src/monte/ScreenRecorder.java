@@ -25,6 +25,7 @@ import org.monte.media.image.Images;
 import org.monte.media.quicktime.QuickTimeWriter;
 */
 
+import monte.avi.TechSmithCodec;
 import monte.quicktime.QuickTimeWriter;
 
 import javax.sound.sampled.*;
@@ -357,7 +358,8 @@ public class ScreenRecorder extends AbstractStateModel {
         File f = createMovieFile(fileFormat);
         recordedFiles.add(f);
 
-        MovieWriter mw = w = Registry.getInstance().getWriter(fileFormat, f);
+        MovieWriter mw = w = new QuickTimeWriter (f); //Registry.getInstance().getWriter(fileFormat, f);
+
 
         // Create the video encoder
         Rational videoRate = Rational.max(screenFormat.get(FrameRateKey), mouseFormat.get(FrameRateKey));
@@ -380,7 +382,8 @@ public class ScreenRecorder extends AbstractStateModel {
             audioTrack = w.addTrack(audioFormat);
         }
 
-        Codec encoder = Registry.getInstance().getEncoder(w.getFormat(videoTrack));
+        Codec encoder = new TechSmithCodec ();
+        //Registry.getInstance().getEncoder(w.getFormat(videoTrack));
         if (encoder == null) {
             throw new IOException("No encoder for format " + w.getFormat(videoTrack));
         }
