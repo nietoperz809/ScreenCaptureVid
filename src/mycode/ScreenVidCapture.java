@@ -1,18 +1,21 @@
+package mycode;
+
 import com.xuggle.mediatool.IMediaWriter;
 import com.xuggle.mediatool.ToolFactory;
 import com.xuggle.xuggler.ICodec;
 import monte.Format;
-import monte.FormatKeys;
 import monte.Rational;
 import monte.ScreenRecorder;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static monte.AudioFormatKeys.EncodingKey;
 import static monte.AudioFormatKeys.FrameRateKey;
@@ -22,24 +25,23 @@ import static monte.AudioFormatKeys.MimeTypeKey;
 import static monte.VideoFormatKeys.*;
 
 public class ScreenVidCapture {
-    static final int STATE_IDLE = 0;
-    static final int STATE_START_RECORDING = 3;
-    static final int STATE_DO_RECORDING = 1;
-    static final int STATE_FINISH_RECORDING = 2;
+    enum STATE {IDLE, START_RECORDING, DO_RECORDING, FINISH_RECORDING};
     final Rectangle screenRect = new Rectangle (Toolkit.getDefaultToolkit ().getScreenSize ());
     final Robot robot = new Robot ();
-    final AtomicInteger state = new AtomicInteger (STATE_IDLE);
+    final AtomicReference<STATE> state = new AtomicReference<> (STATE.IDLE);
     public JButton startButton;
     public JButton stopButton;
     int imageCount;
-    IMediaWriter writer;
     String filename;
     Thread runner;
     private JPanel meinpanel;
     private JLabel label;
 
     Runnable MOV = new Runnable () {
-        GraphicsConfiguration cfg;
+        GraphicsConfiguration cfg = GraphicsEnvironment//
+                .getLocalGraphicsEnvironment()//
+                .getDefaultScreenDevice()//
+                .getDefaultConfiguration();
         ScreenRecorder screenRecorder;
 
         @Override
@@ -47,7 +49,7 @@ public class ScreenVidCapture {
             lab:
             while(true) {
                 switch (state.get ()) {
-                    case STATE_START_RECORDING:
+                    case START_RECORDING:
                         cfg = new JFrame().getGraphicsConfiguration();
                         try {
                             screenRecorder = new ScreenRecorder(cfg, screenRect,
@@ -62,40 +64,33 @@ public class ScreenVidCapture {
                                             DepthKey, 16, FrameRateKey, Rational.valueOf(10),
                                             QualityKey, 1.0f,
                                             KeyFrameIntervalKey, (int) (10 * 60) // one keyframe per minute is enough
-                                    ),
-                                    //
-                                    // the output format for mouse capture:
-                                    null,
-                                    //
-                                    // the output format for audio capture:
-                                    null,
-                                    //
-                                    // the storage location of the movie
-                                    new File (textfield.getText ()));
-                        } catch (IOException e) {
-                            e.printStackTrace ();
-                        } catch (AWTException e) {
-                            e.printStackTrace ();
-                        }
-                        screenRecorder.setAudioMixer (null);
-                        try {
+                                    ),null,null, new File (outputPath.getText ()));
+                            screenRecorder.setAudioMixer (null);
                             screenRecorder.start ();
-                        } catch (IOException e) {
+                        } catch (Exception e) {
                             e.printStackTrace ();
                         }
-                        state.set (STATE_DO_RECORDING);
+                        state.set (STATE.DO_RECORDING);
                         break;
 
-                    case STATE_DO_RECORDING:
+                    case DO_RECORDING:
+                        imageCount++;
+                        label.setText ("" + imageCount);
+                        try {
+                            Thread.sleep (200);
+                        } catch (InterruptedException e) {
+                            return;
+                        }
                         break;
 
-                    case STATE_FINISH_RECORDING:
+                    case FINISH_RECORDING:
                         try {
                             screenRecorder.stop();
                         } catch (IOException e) {
                             e.printStackTrace ();
                         }
-                        state.set (STATE_IDLE);
+                        startButton.setEnabled (true);
+                        state.set (STATE.IDLE);
                         break lab;
                 }
             }
@@ -103,21 +98,22 @@ public class ScreenVidCapture {
     };
 
     Runnable H246 = new Runnable () {
+        IMediaWriter writer;
         @Override
         public void run () {
-            writer = ToolFactory.makeWriter (filename);
-            writer.addVideoStream (0, 0,
-                    ICodec.ID.CODEC_ID_H264,
-                    halfbut2 (screenRect.width),
-                    halfbut2 (screenRect.height));
             lab:
             while (true) {
                 switch (state.get ()) {
-                    case STATE_START_RECORDING:
-                        state.set (STATE_DO_RECORDING);
+                    case START_RECORDING:
+                        writer = ToolFactory.makeWriter (filename);
+                        writer.addVideoStream (0, 0,
+                                ICodec.ID.CODEC_ID_H264,
+                                halfbut2 (screenRect.width),
+                                halfbut2 (screenRect.height));
+                        state.set (STATE.DO_RECORDING);
                         break;
 
-                    case STATE_DO_RECORDING:
+                    case DO_RECORDING:
                         BufferedImage image = robot.createScreenCapture (screenRect);
                         BufferedImage bgrScreen = convertBitmap (image, BufferedImage.TYPE_3BYTE_BGR);
                         imageCount++;
@@ -130,8 +126,8 @@ public class ScreenVidCapture {
                         }
                         break;
 
-                    case STATE_FINISH_RECORDING:
-                        state.set (STATE_IDLE);
+                    case FINISH_RECORDING:
+                        state.set (STATE.IDLE);
                         writer.close ();
                         startButton.setEnabled (true);
                         break lab; // end thread
@@ -139,7 +135,7 @@ public class ScreenVidCapture {
             }
         }
     };
-    private JTextField textfield;
+    private JTextField outputPath;
     private JRadioButton MOVRadioButton;
 
     public ScreenVidCapture () throws Exception {
@@ -150,10 +146,10 @@ public class ScreenVidCapture {
             System.out.println ("Start");
             stopButton.setEnabled (true);
             startButton.setEnabled (false);
-            filename = textfield.getText () + File.separator +
+            filename = outputPath.getText () + File.separator +
                     System.currentTimeMillis () + ".mp4";
             imageCount = 0;
-            state.set (STATE_START_RECORDING);
+            state.set (STATE.START_RECORDING);
             if (MOVRadioButton.isSelected ()) {
                 runner = new Thread (MOV);
                 runner.start ();
@@ -166,7 +162,7 @@ public class ScreenVidCapture {
         stopButton.addActionListener (e -> {
             System.out.println ("Stop");
             stopButton.setEnabled (false);
-            state.set (STATE_FINISH_RECORDING);
+            state.set (STATE.FINISH_RECORDING);
         });
     }
 
