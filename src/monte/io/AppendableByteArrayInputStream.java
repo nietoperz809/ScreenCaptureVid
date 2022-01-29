@@ -20,11 +20,6 @@ import java.io.ByteArrayInputStream;
  */
 public class AppendableByteArrayInputStream extends ByteArrayInputStream {
 
-    public AppendableByteArrayInputStream(byte[] buf, int offset, int length) {
-        super(buf, offset, length);
-        //  System.out.println("AppendableByteArrayInputStream   pos="+pos+" count="+count);
-    }
-
     public AppendableByteArrayInputStream(byte[] buf) {
         super(buf);
         // System.out.println("AppendableByteArrayInputStream   pos="+pos+" count="+count);

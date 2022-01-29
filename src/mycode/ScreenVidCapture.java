@@ -8,8 +8,6 @@ import monte.Rational;
 import monte.ScreenRecorder;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -17,11 +15,6 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-import static monte.AudioFormatKeys.EncodingKey;
-import static monte.AudioFormatKeys.FrameRateKey;
-import static monte.AudioFormatKeys.KeyFrameIntervalKey;
-import static monte.AudioFormatKeys.MediaTypeKey;
-import static monte.AudioFormatKeys.MimeTypeKey;
 import static monte.VideoFormatKeys.*;
 
 public class ScreenVidCapture {
@@ -37,7 +30,7 @@ public class ScreenVidCapture {
     private JPanel meinpanel;
     private JLabel label;
 
-    Runnable MOV = new Runnable () {
+    final Runnable MOV = new Runnable () {
         GraphicsConfiguration cfg = GraphicsEnvironment//
                 .getLocalGraphicsEnvironment()//
                 .getDefaultScreenDevice()//
@@ -97,7 +90,7 @@ public class ScreenVidCapture {
         }
     };
 
-    Runnable H246 = new Runnable () {
+    final Runnable H246 = new Runnable () {
         IMediaWriter writer;
         @Override
         public void run () {

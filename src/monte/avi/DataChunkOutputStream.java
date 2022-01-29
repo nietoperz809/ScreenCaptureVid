@@ -32,10 +32,6 @@ public class DataChunkOutputStream extends FilterOutputStream {
     /** Whether flush and close request shall be forwarded to underlying stream.*/
     private boolean forwardFlushAndClose;
 
-    public DataChunkOutputStream(OutputStream out) {
-        this(out, true);
-    }
-
     public DataChunkOutputStream(OutputStream out, boolean forwardFlushAndClose) {
         super(out);
         this.forwardFlushAndClose = forwardFlushAndClose;
