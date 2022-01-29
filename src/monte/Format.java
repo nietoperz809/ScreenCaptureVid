@@ -10,10 +10,8 @@
  */
 package monte;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Specifies the format of a media, for example of audio and video.
@@ -27,13 +25,6 @@ public class Format {
      * Holds the properties of the format.
      */
     private HashMap<FormatKey, Object> properties;
-
-    /**
-     * Creates a new format onlyWith the specified properties.
-     */
-    public Format (Map<FormatKey, Object> properties) {
-        this(properties, true);
-    }
 
     /**
      * Creates a new format onlyWith the specified properties.
@@ -78,20 +69,6 @@ public class Format {
 
     public boolean containsKey(FormatKey key) {
         return properties.containsKey(key);
-    }
-
-    /**
-     * Gets the properties of the format as an unmodifiable map.
-     */
-    public Map<FormatKey, Object> getProperties() {
-        return Collections.unmodifiableMap(properties);
-    }
-
-    /**
-     * Gets the keys of the format as an unmodifiable set.
-     */
-    public Set<FormatKey> getKeys() {
-        return Collections.unmodifiableSet(properties.keySet());
     }
 
     /**
@@ -184,27 +161,6 @@ public class Format {
     }
 
     /**
-     * Creates a new format which contains all properties from the specified
-     * format and additional properties from this format. 
-     * <p> If a property is specified in both formats, then the property value
-     * from this format is used. It overwrites that format. 
-     * <p> If one of the format has more properties than the other, then the new
-     * format is more specific than this format.
-     *
-     * @param that
-     * @return That format with properties overwritten by this format.
-     */
-    public Format prepend(Format that) {
-        HashMap<FormatKey, Object> m = new HashMap<FormatKey, Object>(that.properties);
-        for (Map.Entry<FormatKey, Object> e : this.properties.entrySet()) {
-            if (!m.containsKey(e.getKey())) {
-                m.put(e.getKey(), e.getValue());
-            }
-        }
-        return new Format(m,false);
-    }
-
-    /**
      * Creates a new format which contains all specified properties and 
      * additional properties from this format. 
      * <p> If a property is specified in both formats, then the property value
@@ -242,40 +198,6 @@ public class Format {
             if (properties.containsKey(k)) {
                 m.put(k, properties.get(k));
             }
-        }
-        return new Format(m,false);
-    }
-
-    /**
-     * Creates a new format without the specified keys. <p> If the keys are
-     * reduced, then the new format is less specific than this format.
-     */
-    public Format removeKeys(FormatKey... keys) {
-        boolean needsRemoval = false;
-        for (FormatKey k : keys) {
-            if (properties.containsKey(k)) {
-                needsRemoval = true;
-                break;
-            }
-        }
-        if (!needsRemoval) {
-            return this;
-        }
-
-        HashMap<FormatKey, Object> m = new HashMap<FormatKey, Object>(properties);
-        for (FormatKey k : keys) {
-            m.remove(k);
-        }
-        return new Format(m,false);
-    }
-
-    /**
-     * Returns true if the format has the specified keys.
-     */
-    public Format containsKeys(FormatKey... keys) {
-        HashMap<FormatKey, Object> m = new HashMap<FormatKey, Object>(properties);
-        for (FormatKey k : keys) {
-            m.remove(k);
         }
         return new Format(m,false);
     }

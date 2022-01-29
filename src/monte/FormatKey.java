@@ -60,22 +60,6 @@ public class FormatKey<T> implements Serializable, Comparable {
         this.comment=comment;
     }
 
-    /**
-     * Returns the key string.
-     * @return key string.
-     */
-    public String getKey() {
-        return key;
-    }
-
-    /**
-     * Returns the pretty name string.
-     * @return name string.
-     */
-    public String getName() {
-        return name;
-    }
-
     /** Returns the key string. */
     @Override
     public String toString() {

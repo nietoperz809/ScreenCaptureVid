@@ -15,9 +15,6 @@ package monte;
 //import org.monte.media.Format;
 //import org.monte.media.io.ByteArrayImageOutputStream;
 
-import monte.AbstractVideoCodec;
-import monte.Buffer;
-import monte.Format;
 import monte.io.ByteArrayImageOutputStream;
 
 import javax.imageio.stream.ImageOutputStream;
@@ -128,11 +125,6 @@ public class RunLengthCodec extends AbstractVideoCodec {
                     EncodingKey, ENCODING_AVI_RLE, DataClassKey, byte[].class,
                             FixedFrameRateKey, true, DepthKey,8), //
                 });
-    }
-
-    @Override
-    public void reset() {
-        frameCounter = 0;
     }
 
     @Override

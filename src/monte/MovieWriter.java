@@ -19,8 +19,6 @@ import java.io.IOException;
  * @version $Id: MovieWriter.java 299 2013-01-03 07:40:18Z werner $
  */
 public interface MovieWriter extends Multiplexer {
-    /** Returns the file format. */
-    public Format getFileFormat() throws IOException;
 
     /** Adds a track to the writer for a suggested input format.
      * <p>
@@ -47,9 +45,6 @@ public interface MovieWriter extends Multiplexer {
      * @return The media format of the track.
      */
     public Format getFormat(int track);
-    
-    /** Returns the number of tracks. */
-    public int getTrackCount();
 
     /** Writes a sample into the specified track.
      * Does nothing if the discard-flag in the buffer is set to true.
@@ -57,11 +52,9 @@ public interface MovieWriter extends Multiplexer {
      * @param track The track number.
      * @param buf The buffer containing the sample data.
      */
-    @Override
     public void write(int track, Buffer buf) throws IOException;
 
     /** Closes the writer. */
-    @Override
     public void close() throws IOException;
 
     /** Returns true if the limit for media data has been reached.
@@ -74,8 +67,4 @@ public interface MovieWriter extends Multiplexer {
      */
     public boolean isDataLimitReached();
 
-    /** Returns the duration of the track in seconds. */
-    public Rational getDuration(int track);
-    /** Returns true if the specified track has no samples. */
-    public boolean isEmpty(int track);
 }

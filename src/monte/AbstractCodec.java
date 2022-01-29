@@ -29,8 +29,7 @@ public abstract class AbstractCodec implements Codec {
         this.outputFormats = supportedInputOutputFormats;
     }
 
-    @Override
-    public Format[] getInputFormats() {
+    private Format[] getInputFormats () {
         return inputFormats.clone();
     }
 
@@ -69,11 +68,6 @@ public abstract class AbstractCodec implements Codec {
     }
 
     @Override
-    public Format getInputFormat() {
-        return inputFormat;
-    }
-
-    @Override
     public Format getOutputFormat() {
         return outputFormat;
     }
@@ -81,12 +75,6 @@ public abstract class AbstractCodec implements Codec {
     @Override
     public String getName() {
         return name;
-    }
-
-    /** Empty implementation of the reset method. Don't call super. */
-    @Override
-    public void reset() {
-        // empty
     }
 
     @Override
