@@ -360,7 +360,7 @@ public class DataAtomOutputStream extends FilterOutputStream {
 
         write(b, 0, len * 4);
     }
-    private byte[] byteBuf = new byte[3];
+    private final byte[] byteBuf = new byte[3];
 
     public void writeInt24(int v) throws IOException {
         byteBuf[0] = (byte) (v >>> 16);

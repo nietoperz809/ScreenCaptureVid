@@ -182,9 +182,7 @@ public class ScreenVidCapture {
 
     int halfbut2 (int i) {
         int ret = i / 2;
-        if (ret % 2 == 1)
-            return ret - 1;
-        return ret;
+        return ret - (ret % 2);
     }
 
     private void createUIComponents () {

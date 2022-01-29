@@ -112,11 +112,11 @@ public class AbstractQuickTimeStream {
     /**
      * The list of tracks in the movie.
      */
-    protected ArrayList<Track> tracks = new ArrayList<Track>();
+    protected final ArrayList<Track> tracks = new ArrayList<Track>();
     /**
      * The transformation matrix for the entire movie.
      */
-    protected double[] movieMatrix = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+    protected final double[] movieMatrix = {1, 0, 0, 0, 1, 0, 0, 0, 1};
 
     /**
      * The states of the movie output stream.
@@ -179,12 +179,12 @@ public class AbstractQuickTimeStream {
         /**
          * The type of the atom. A String with the length of 4 characters.
          */
-        protected String type;
+        protected final String type;
         /**
          * The offset of the atom relative to the start of the
          * ImageOutputStream.
          */
-        protected long offset;
+        protected final long offset;
 
         /**
          * Creates a new Atom at the current position of the ImageOutputStream.
@@ -413,7 +413,7 @@ public class AbstractQuickTimeStream {
      */
     protected abstract static class Group {
 
-        protected Sample firstSample;
+        protected final Sample firstSample;
         protected Sample lastSample;
         protected long sampleCount;
         protected final static long maxSampleCount = Integer.MAX_VALUE;
@@ -482,15 +482,15 @@ public class AbstractQuickTimeStream {
         /**
          * Offset of the sample relative to the start of the QuickTime file.
          */
-        long offset;
+        final long offset;
         /**
          * Data length of the sample.
          */
-        long length;
+        final long length;
         /**
          * The duration of the sample in media time scale units.
          */
-        long duration;
+        final long duration;
 
         /**
          * Creates a new sample.
@@ -600,7 +600,7 @@ public class AbstractQuickTimeStream {
      */
     protected static class Chunk extends Group {
 
-        protected int sampleDescriptionId;
+        protected final int sampleDescriptionId;
 
         /**
          * Creates a new Chunk.
@@ -688,15 +688,15 @@ public class AbstractQuickTimeStream {
         /**
          * List of chunks.
          */
-        protected ArrayList<Chunk> chunks = new ArrayList<Chunk>();
+        protected final ArrayList<Chunk> chunks = new ArrayList<Chunk>();
         /**
          * List of TimeToSample entries.
          */
-        protected ArrayList<TimeToSampleGroup> timeToSamples = new ArrayList<TimeToSampleGroup>();
+        protected final ArrayList<TimeToSampleGroup> timeToSamples = new ArrayList<TimeToSampleGroup>();
         /**
          * List of SampleSize entries.
          */
-        protected ArrayList<SampleSizeGroup> sampleSizes = new ArrayList<SampleSizeGroup>();
+        protected final ArrayList<SampleSizeGroup> sampleSizes = new ArrayList<SampleSizeGroup>();
         /**
          * List of sync samples. This list is null as long as all samples in
          * this track are sync samples.
@@ -736,7 +736,7 @@ public class AbstractQuickTimeStream {
         /**
          * The transformation matrix of the track.
          */
-        protected double[] matrix = {//
+        protected final double[] matrix = {//
             1, 0, 0,//
             0, 1, 0,//
             0, 0, 1
@@ -1885,7 +1885,7 @@ public class AbstractQuickTimeStream {
          * Extensions to the stsd chunk. Must contain atom-based fields: ([long
          * size, long type, some data], repeat)
          */
-        protected byte[] stsdExtensions = new byte[0];
+        protected final byte[] stsdExtensions = new byte[0];
 
         public AudioTrack() {
             super(FormatKeys.MediaType.AUDIO);

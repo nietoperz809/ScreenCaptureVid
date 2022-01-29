@@ -32,14 +32,6 @@ public class AudioFormatKeys extends FormatKeys {
      */
     public static final String ENCODING_PCM_UNSIGNED = Encoding.PCM_UNSIGNED.toString();
     /**
-     * Specifies u-law encoded data.
-     */
-    public static final String ENCODING_ULAW = Encoding.ULAW.toString();
-    /**
-     * Specifies a-law encoded data.
-     */
-    public static final String ENCODING_ALAW = Encoding.ALAW.toString();
-    /**
      * AVI PCM encoding.
      */
     public static final String ENCODING_AVI_PCM = "\u0000\u0000\u0000\u0001";
@@ -63,10 +55,6 @@ public class AudioFormatKeys extends FormatKeys {
      * QuickTime 8-bit unsigned PCM encoding.
      */
     public static final String ENCODING_QUICKTIME_RAW_PCM = "raw ";
-    /**
-     * Specifies MP3 encoded data.
-     */
-    public static final String ENCODING_MP3 = "MP3";
     /**
      * The sample size in bits.
      */

@@ -105,7 +105,7 @@ public class ScreenRecorder extends AbstractStateModel {
     /**
      * The file format. "AVI" or "QuickTime"
      */
-    private Format fileFormat;
+    private final Format fileFormat;
     /**
      * The input video format for cursor capture. "black" or "white".
      */
@@ -113,15 +113,15 @@ public class ScreenRecorder extends AbstractStateModel {
     /**
      * The input video format for screen capture.
      */
-    private Format screenFormat;
+    private final Format screenFormat;
     /**
      * The input and output format for audio capture.
      */
-    private Format audioFormat;
+    private final Format audioFormat;
     /**
      * The bounds of the graphics device that we capture with AWT Robot.
      */
-    private Rectangle captureArea;
+    private final Rectangle captureArea;
     /**
      * The writer for the movie file.
      */
@@ -183,7 +183,7 @@ public class ScreenRecorder extends AbstractStateModel {
      */
     private Rational outputTime;
     private Rational ffrDuration;
-    private ArrayList<File> recordedFiles;
+    private final ArrayList<File> recordedFiles;
     /**
      * Id of the video track.
      */
@@ -195,7 +195,7 @@ public class ScreenRecorder extends AbstractStateModel {
     /**
      * The device from which screen captures are generated.
      */
-    private GraphicsDevice captureDevice;
+    private final GraphicsDevice captureDevice;
     private AudioGrabber audioGrabber;
     private ScreenGrabber screenGrabber;
     protected MouseGrabber mouseGrabber;
@@ -537,19 +537,19 @@ public class ScreenRecorder extends AbstractStateModel {
          * location at hand, when a new screen capture has been created, but the
          * mouse has not been moved.
          */
-        private Point prevDrawnMouseLocation = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
+        private final Point prevDrawnMouseLocation = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
         private boolean prevMousePressed = false;
         /**
          * Holds the screen capture made with AWT Robot.
          */
         private BufferedImage screenCapture;
-        private ScreenRecorder recorder;
+        private final ScreenRecorder recorder;
         private ScheduledThreadPoolExecutor screenTimer;
         /**
          * The AWT Robot which we use for capturing the screen.
          */
         private Robot robot;
-        private Rectangle captureArea;
+        private final Rectangle captureArea;
         /**
          * Holds the composed image (screen capture and super-imposed mouse
          * cursor). This is the image that is written into the video track of
@@ -821,15 +821,15 @@ public class ScreenRecorder extends AbstractStateModel {
          * Previously captured mouse location. This is used to coalesce mouse
          * captures if the mouse has not been moved.
          */
-        private Point prevCapturedMouseLocation = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
-        private ScheduledThreadPoolExecutor timer;
+        private final Point prevCapturedMouseLocation = new Point(Integer.MAX_VALUE, Integer.MAX_VALUE);
+        private final ScheduledThreadPoolExecutor timer;
         private ScreenRecorder recorder;
-        private GraphicsDevice captureDevice;
-        private Rectangle captureArea;
-        private BlockingQueue<Buffer> mouseCaptures;
+        private final GraphicsDevice captureDevice;
+        private final Rectangle captureArea;
+        private final BlockingQueue<Buffer> mouseCaptures;
         private volatile long stopTime = Long.MAX_VALUE;
-        private long startTime;
-        private Format format;
+        private final long startTime;
+        private final Format format;
         private ScheduledFuture future;
         private volatile boolean mousePressed;
         private volatile boolean mouseWasPressed;
@@ -968,7 +968,7 @@ public class ScreenRecorder extends AbstractStateModel {
         private long sequenceNumber;
         private float audioLevelLeft = AudioSystem.NOT_SPECIFIED;
         private float audioLevelRight = AudioSystem.NOT_SPECIFIED;
-        private Mixer mixer;
+        private final Mixer mixer;
 
         public AudioGrabber(Mixer mixer, Format audioFormat, int audioTrack, long startTime, BlockingQueue<Buffer> queue)
                 throws LineUnavailableException {

@@ -50,9 +50,9 @@ public class DefaultRegistry extends Registry {
 
     private static class RegistryEntry {
 
-        Format inputFormat;
-        Format outputFormat;
-        String className;
+        final Format inputFormat;
+        final Format outputFormat;
+        final String className;
 
         public RegistryEntry(Format inputFormat, Format outputFormat, String className) {
             this.inputFormat = inputFormat;

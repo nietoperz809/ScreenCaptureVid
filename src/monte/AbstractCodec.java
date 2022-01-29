@@ -14,8 +14,8 @@ import java.util.ArrayList;
  */
 public abstract class AbstractCodec implements Codec {
 
-    protected Format[] inputFormats;
-    protected Format[] outputFormats;
+    protected final Format[] inputFormats;
+    protected final Format[] outputFormats;
     protected Format inputFormat;
     protected Format outputFormat;
     protected String name="unnamed codec";

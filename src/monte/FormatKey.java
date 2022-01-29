@@ -27,18 +27,18 @@ public class FormatKey<T> implements Serializable, Comparable {
     /**
      * Holds a String representation of the attribute key.
      */
-    private String key;
+    private final String key;
     /**
      * Holds a pretty name. This can be null, if the value is self-explaining.
      */
-    private String name;
+    private final String name;
     /** This variable is used as a "type token" so that we can check for
      * assignability of attribute values at runtime.
      */
-    private Class<T> clazz;
+    private final Class<T> clazz;
     
     /** Comment keys are ignored when matching two media formats with each other. */
-    private boolean comment;
+    private final boolean comment;
 
     /** Creates a new instance with the specified attribute key, type token class,
      * default value null, and allowing null values. */

@@ -28,7 +28,7 @@ public class ImageOutputStreamAdapter extends OutputStream {
     /**
      * The underlying output stream to be filtered.
      */
-    protected ImageOutputStream out;
+    protected final ImageOutputStream out;
 
     /**
      * Creates an output stream filter built on top of the specified

@@ -30,20 +30,7 @@ public class AbstractStateModel {
     /** Creates a new instance of AbstractChangeModel */
     public AbstractStateModel () {
     }
-    
-    public void addChangeListener(ChangeListener l) {
-        if (listenerList == null) {
-            listenerList = new EventListenerList();
-        }
-        listenerList.add(ChangeListener.class, l);
-    }
-    
-    public void removeChangeListener(ChangeListener l) {
-        if (listenerList == null) {
-            listenerList = new EventListenerList();
-        }
-        listenerList.remove(ChangeListener.class, l);
-    }
+
     /**
      * Notify all listeners that have registered interest for
      * notification on this event type.
