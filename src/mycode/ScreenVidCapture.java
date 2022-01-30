@@ -13,6 +13,8 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +32,7 @@ public class ScreenVidCapture {
     int imageCount;
     String filename;
     Thread runner;
-    private JPanel meinpanel;
+    private JPanel mainPanel;
     private JLabel label;
 
     final Runnable H246 = new Runnable () {
@@ -135,7 +137,6 @@ public class ScreenVidCapture {
     public ScreenVidCapture () throws Exception {
         stopButton.setEnabled (false);
         ToolFactory.setTurboCharged (true);
-
         outputPath.setText (System.getProperty ("user.home") + File.separator + "Videos");
         outputPath.setToolTipText ("Drop path here ...");
         outputPath.setDropTarget (new DropTarget () {
@@ -192,7 +193,23 @@ public class ScreenVidCapture {
 
     public static void main (String[] args) throws Exception {
         JFrame frame = new JFrame ("Tester");
-        frame.setContentPane (new ScreenVidCapture ().meinpanel);
+        ScreenVidCapture svc = new ScreenVidCapture ();
+        frame.addWindowListener (new WindowAdapter () {
+            @Override
+            public void windowClosing (WindowEvent e) {
+                if (svc.state.get () == STATE.DO_RECORDING) {
+                    svc.state.set (STATE.FINISH_RECORDING);
+                    while (svc.state.get () != STATE.IDLE) {
+                        try {
+                            Thread.sleep (100);
+                        } catch (InterruptedException ex) {
+                            ex.printStackTrace ();
+                        }
+                    }
+                }
+            }
+        });
+        frame.setContentPane (svc.mainPanel);
         frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
         frame.pack ();
         frame.setResizable (false);
