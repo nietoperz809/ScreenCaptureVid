@@ -127,7 +127,8 @@ public class ScreenRecorder /*extends AbstractStateModel*/ {
                            Rectangle captureArea,
                            Format fileFormat,
                            Format screenFormat,
-                           File movieFolder) {
+                           File movieFolder)
+    {
 
         this.fileFormat = fileFormat;
         this.screenFormat = screenFormat;
@@ -141,16 +142,11 @@ public class ScreenRecorder /*extends AbstractStateModel*/ {
                 this.movieFolder = new File (System.getProperty ("user.home") + File.separator + "Movies");
             }
         }
-
     }
 
     protected MovieWriter createMovieWriter () throws IOException {
         File f = createMovieFile (fileFormat);
-        //recordedFiles.add(f);
-
         MovieWriter mw = w = new QuickTimeWriter (f); //Registry.getInstance().getWriter(fileFormat, f);
-
-
         // Create the video encoder
         Rational videoRate = screenFormat.get (FrameRateKey); //Rational.max(screenFormat.get(FrameRateKey), mouseFormat.get(FrameRateKey));
         ffrDuration = videoRate.inverse ();
@@ -238,13 +234,12 @@ public class ScreenRecorder /*extends AbstractStateModel*/ {
     /**
      * Starts the screen recorder.
      */
-    public void start () throws IOException {
-        stop ();
-        createMovieWriter ();
+    public void start () {
         try {
+            stop ();
+            createMovieWriter ();
             recordingStartTime = System.currentTimeMillis ();
             recordingStopTime = Long.MAX_VALUE;
-
             outputTime = new Rational (0, 0);
             startWriter ();
             try {
@@ -258,9 +253,8 @@ public class ScreenRecorder /*extends AbstractStateModel*/ {
                 throw ioe;
             }
             setState (State.RECORDING, null);
-        } catch (IOException e) {
-            stop ();
-            throw e;
+        } catch (Exception e) {
+            System.out.println (e);
         }
     }
 
