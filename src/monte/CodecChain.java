@@ -6,6 +6,7 @@ package monte;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * {@code CodecChain}.
@@ -29,6 +30,37 @@ public class CodecChain implements Codec {
         this.second = second;
     }
 
+    public static Codec createCodecChain(List<Codec> codecs) {
+        return createCodecChain(codecs.toArray(new Codec[codecs.size()]));
+    }
+
+    public static Codec createCodecChain(Codec... codecs) {
+        // get rid of all null values
+        ArrayList<Codec> clist = new ArrayList<Codec>();
+        for (Codec c : codecs) {
+            if (c != null) {
+                clist.add(c);
+            }
+        }
+        if (clist.isEmpty()) {
+            return null;
+        }
+        if (clist.size() == 1) {
+            return codecs[0];
+        } else {
+            CodecChain cc = new CodecChain(clist.get(clist.size() - 2), clist.get(clist.size() - 1));
+            for (int i = clist.size() - 3; i >= 0; i--) {
+                cc = new CodecChain(clist.get(i), cc);
+            }
+            return cc;
+        }
+    }
+
+    @Override
+    public Format[] getInputFormats() {
+        return first.getInputFormats();
+    }
+
     @Override
     public Format[] getOutputFormats(Format input) {
         ArrayList<Format> secondOuts = new ArrayList<Format>();
@@ -42,6 +74,11 @@ public class CodecChain implements Codec {
     @Override
     public Format setInputFormat(Format input) {
         return second.setInputFormat(first.setInputFormat(input));
+    }
+
+    @Override
+    public Format getInputFormat() {
+        return first.getInputFormat();
     }
 
     @Override
@@ -97,8 +134,33 @@ public class CodecChain implements Codec {
     }
 
     @Override
+    public void reset() {
+        first.reset();
+        second.reset();
+        tmpBuf = null;
+    }
+
+    @Override
     public String toString() {
         return "CodecChain{" + first + "," + second + "}";
     }
-
+    
+    public long getElapsedTime() {
+        return firstElapsed+secondElapsed;
+    }
+    
+    public String reportElapsedTime() {
+        if (second instanceof CodecChain) {
+        return "{" + first.getName() +" "+firstElapsed+ ((CodecChain)second).reportElapsedTime0() + "}";
+        } else {
+        return "{" + first.getName() +" "+firstElapsed+ ", " + second.getName() +" "+secondElapsed+ "}";
+        }
+    }
+    private String reportElapsedTime0() {
+        if (second instanceof CodecChain) {
+        return ", " + first.getName() +" "+firstElapsed+ ((CodecChain)second).reportElapsedTime0() ;
+        } else {
+        return ", " + first.getName() +" "+firstElapsed+ ", " + second.getName() +" "+secondElapsed;
+        }
+    }
 }

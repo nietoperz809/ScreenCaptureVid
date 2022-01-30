@@ -161,6 +161,43 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
     }
 
     /**
+     * Skips <code>n</code> bytes of input from this input stream. Fewer
+     * bytes might be skipped if the end of the input stream is reached.
+     * The actual number <code>k</code>
+     * of bytes to be skipped is equal to the smaller
+     * of <code>n</code> and  <code>count-streamPos</code>.
+     * The value <code>k</code> is added into <code>streamPos</code>
+     * and <code>k</code> is returned.
+     *
+     * @param   n   the number of bytes to be skipped.
+     * @return  the actual number of bytes skipped.
+     */
+    public synchronized long skip(long n) {
+        if (streamPos + n > count) {
+            n = count - streamPos;
+        }
+        if (n < 0) {
+            return 0;
+        }
+        streamPos += n;
+        return n;
+    }
+
+    /**
+     * Returns the number of remaining bytes that can be read (or skipped over)
+     * from this input stream.
+     * <p>
+     * The value returned is <code>count&nbsp;- streamPos</code>,
+     * which is the number of bytes remaining to be read from the input buffer.
+     *
+     * @return  the number of remaining bytes that can be read (or skipped
+     *          over) from this input stream without blocking.
+     */
+    public synchronized int available() {
+        return (int) (count - streamPos);
+    }
+
+    /**
      * Closing a <tt>ByteArrayInputStream</tt> has no effect. The methods in
      * this class can be called after the stream has been closed without
      * generating an <tt>IOException</tt>.
@@ -251,6 +288,28 @@ public class ByteArrayImageOutputStream extends ImageOutputStreamImpl {
      */
     public void toOutputStream(OutputStream out) throws IOException {
         out.write(buf, arrayOffset, count);
+    }
+
+    /** Writes the contents of the byte array into the specified image output
+     * stream.
+     * @param out
+     */
+    public void toImageOutputStream(ImageOutputStream out) throws IOException {
+        out.write(buf, arrayOffset, count);
+    }
+
+    /**
+     * Creates a newly allocated byte array. Its size is the current
+     * size of this output stream and the valid contents of the buffer
+     * have been copied into it.
+     *
+     * @return  the current contents of this output stream, as a byte array.
+     * @see     ByteArrayOutputStream#size()
+     */
+    public synchronized byte[] toByteArray() {
+        byte[] copy = new byte[count - arrayOffset];
+        System.arraycopy(buf, arrayOffset, copy, 0, count);
+        return copy;
     }
 
     /** Returns the internally used byte buffer. */

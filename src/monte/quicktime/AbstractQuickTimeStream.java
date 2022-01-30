@@ -8,7 +8,7 @@
  * license agreement you entered into with Werner Randelshofer.
  * For details see accompanying license terms.
  */
-package monte;
+package monte.quicktime;
 
 //import org.monte.media.Buffer;
 //import org.monte.media.Codec;
@@ -16,6 +16,7 @@ package monte;
 //import org.monte.media.io.ImageOutputStreamAdapter;
 //import org.monte.media.math.Rational;
 
+import monte.*;
 import monte.io.ImageOutputStreamAdapter;
 
 import javax.imageio.stream.ImageOutputStream;
@@ -112,11 +113,11 @@ public class AbstractQuickTimeStream {
     /**
      * The list of tracks in the movie.
      */
-    protected final ArrayList<Track> tracks = new ArrayList<Track>();
+    protected ArrayList<Track> tracks = new ArrayList<Track>();
     /**
      * The transformation matrix for the entire movie.
      */
-    protected final double[] movieMatrix = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+    protected double[] movieMatrix = {1, 0, 0, 0, 1, 0, 0, 0, 1};
 
     /**
      * The states of the movie output stream.
@@ -179,12 +180,12 @@ public class AbstractQuickTimeStream {
         /**
          * The type of the atom. A String with the length of 4 characters.
          */
-        protected final String type;
+        protected String type;
         /**
          * The offset of the atom relative to the start of the
          * ImageOutputStream.
          */
-        protected final long offset;
+        protected long offset;
 
         /**
          * Creates a new Atom at the current position of the ImageOutputStream.
@@ -413,7 +414,7 @@ public class AbstractQuickTimeStream {
      */
     protected abstract static class Group {
 
-        protected final Sample firstSample;
+        protected Sample firstSample;
         protected Sample lastSample;
         protected long sampleCount;
         protected final static long maxSampleCount = Integer.MAX_VALUE;
@@ -482,15 +483,15 @@ public class AbstractQuickTimeStream {
         /**
          * Offset of the sample relative to the start of the QuickTime file.
          */
-        final long offset;
+        long offset;
         /**
          * Data length of the sample.
          */
-        final long length;
+        long length;
         /**
          * The duration of the sample in media time scale units.
          */
-        final long duration;
+        long duration;
 
         /**
          * Creates a new sample.
@@ -600,7 +601,7 @@ public class AbstractQuickTimeStream {
      */
     protected static class Chunk extends Group {
 
-        protected final int sampleDescriptionId;
+        protected int sampleDescriptionId;
 
         /**
          * Creates a new Chunk.
@@ -688,15 +689,15 @@ public class AbstractQuickTimeStream {
         /**
          * List of chunks.
          */
-        protected final ArrayList<Chunk> chunks = new ArrayList<Chunk>();
+        protected ArrayList<Chunk> chunks = new ArrayList<Chunk>();
         /**
          * List of TimeToSample entries.
          */
-        protected final ArrayList<TimeToSampleGroup> timeToSamples = new ArrayList<TimeToSampleGroup>();
+        protected ArrayList<TimeToSampleGroup> timeToSamples = new ArrayList<TimeToSampleGroup>();
         /**
          * List of SampleSize entries.
          */
-        protected final ArrayList<SampleSizeGroup> sampleSizes = new ArrayList<SampleSizeGroup>();
+        protected ArrayList<SampleSizeGroup> sampleSizes = new ArrayList<SampleSizeGroup>();
         /**
          * List of sync samples. This list is null as long as all samples in
          * this track are sync samples.
@@ -736,7 +737,7 @@ public class AbstractQuickTimeStream {
         /**
          * The transformation matrix of the track.
          */
-        protected final double[] matrix = {//
+        protected double[] matrix = {//
             1, 0, 0,//
             0, 1, 0,//
             0, 0, 1
@@ -1885,7 +1886,7 @@ public class AbstractQuickTimeStream {
          * Extensions to the stsd chunk. Must contain atom-based fields: ([long
          * size, long type, some data], repeat)
          */
-        protected final byte[] stsdExtensions = new byte[0];
+        protected byte[] stsdExtensions = new byte[0];
 
         public AudioTrack() {
             super(FormatKeys.MediaType.AUDIO);

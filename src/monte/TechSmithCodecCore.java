@@ -172,7 +172,7 @@ import static java.lang.Math.min;
  */
 public class TechSmithCodecCore extends AbstractVideoCodecCore {
 
-    private final ByteArrayImageOutputStream temp = new ByteArrayImageOutputStream(ByteOrder.LITTLE_ENDIAN);
+    private ByteArrayImageOutputStream temp = new ByteArrayImageOutputStream(ByteOrder.LITTLE_ENDIAN);
     private byte[] temp2;
     private int[] palette;
 
@@ -184,7 +184,7 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
         palette = null;
     }
 
-    public void getPalette() {
+    public int[] getPalette() {
         if (palette == null) {
             palette = new int[256];
             // initalize palette with grayscale colors
@@ -192,9 +192,10 @@ public class TechSmithCodecCore extends AbstractVideoCodecCore {
                 palette[i] = (i) | (i << 8) | (i << 16);
             }
         }
+        return palette;
     }
 
-    /** Decodes to 8-bit palettised.
+    /** Decodes to 8-bit palettised. 
      * Returns true if a key-frame was decoded.
      * 
      * 

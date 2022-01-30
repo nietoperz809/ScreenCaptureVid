@@ -25,7 +25,7 @@ import java.nio.ByteOrder;
  */
 public class UncachedImageInputStream extends ImageInputStreamImpl2 {
 
-    private final InputStream in;
+    private InputStream in;
 
     public UncachedImageInputStream(InputStream in) {
         this(in, ByteOrder.BIG_ENDIAN);

@@ -1,5 +1,5 @@
 /*
- * @(#)ParseException.java  
+ * @(#)AbortException.java  
  *
  * Copyright (c) 1999-2012 Werner Randelshofer, Goldau, Switzerland.
  * All rights reserved.
@@ -11,20 +11,29 @@
 package monte;
 
 /**
- * Exception thrown by IFFParse.
- * 
+ * This exception is thrown when the production of an image
+ * has been aborted.
+ *
  * @author  Werner Randelshofer, Hausmatt 10, CH-6405 Goldau, Switzerland
- * @version  $Id: ParseException.java 299 2013-01-03 07:40:18Z werner $
+ *
+ * @version  $Id: AbortException.java 299 2013-01-03 07:40:18Z werner $
  */
-public class ParseException extends Exception {
+public class AbortException extends Exception {
 
     public static final long serialVersionUID = 1L;
 
-    public ParseException (String message) {
-        super(message);
+    /**
+    Creates a new exception.
+     */
+    public AbortException () {
+        super();
     }
 
-    public ParseException (String message, Throwable cause) {
-        super(message, cause);
+    /**
+    Creates a new exception.
+    
+     */
+    public AbortException (String message) {
+        super(message);
     }
 }

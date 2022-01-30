@@ -34,7 +34,7 @@ public abstract class ImageInputStreamImpl2 extends ImageInputStreamImpl {
      * Also note that this array is package protected, so that it can be
      * used by ImageOutputStreamImpl in a similar manner.
      */
-    final byte[] byteBuf = new byte[BYTE_BUF_LENGTH];
+    byte[] byteBuf = new byte[BYTE_BUF_LENGTH];
 
     @Override
         public short readShort() throws IOException {

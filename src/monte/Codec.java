@@ -30,6 +30,9 @@ public interface Codec {
      */
     public final static int CODEC_OUTPUT_NOT_FILLED = 4;
 
+    /** Lists all of the input formats that this codec accepts. */
+    public Format[] getInputFormats();
+
     /** Lists all of the output formats that this codec can generate
      * with the provided input format. If the input format is null, returns
      * all supported output formats.
@@ -42,6 +45,8 @@ public interface Codec {
      * supported and no reasonable match could be found.
      */
     public Format setInputFormat(Format input);
+
+    public Format getInputFormat();
 
     /** Sets the output format.
      * Returns the format that was actually set. This is the closest format
@@ -63,4 +68,6 @@ public interface Codec {
     /** Returns a human readable name of the codec. */
     public String getName();
 
+    /** Resets the state of the codec. */
+    public void reset();
 }

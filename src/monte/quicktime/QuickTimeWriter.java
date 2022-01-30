@@ -8,19 +8,24 @@
  * license agreement you entered into with Werner Randelshofer.
  * For details see accompanying license terms.
  */
-package monte;
+package monte.quicktime;
 
+import monte.*;
 //import org.monte.media.*;
 //import org.monte.media.math.Rational;
 
+import javax.imageio.stream.ImageOutputStream;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteOrder;
 
 import static monte.AudioFormatKeys.*;
 import static monte.BufferFlag.DISCARD;
 import static monte.BufferFlag.KEYFRAME;
-        import static monte.VideoFormatKeys.*;
+import static monte.FormatKeys.*;
+import static monte.VideoFormatKeys.*;
 //import static org.monte.media.AudioFormatKeys.*;
 //import static org.monte.media.BufferFlag.*;
 //import static org.monte.media.VideoFormatKeys.*;
@@ -140,6 +145,26 @@ import static monte.BufferFlag.KEYFRAME;
 public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWriter {
 
     public final static Format QUICKTIME = new Format(MediaTypeKey, MediaType.FILE, MimeTypeKey, MIME_QUICKTIME);
+    public final static Format VIDEO_RAW = new Format(
+            MediaTypeKey, MediaType.VIDEO,//
+            MimeTypeKey, MIME_QUICKTIME,
+            EncodingKey, ENCODING_QUICKTIME_RAW,//
+            CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_RAW);
+    public final static Format VIDEO_ANIMATION = new Format(
+            MediaTypeKey, MediaType.VIDEO, //
+            MimeTypeKey, MIME_QUICKTIME,
+            EncodingKey, ENCODING_QUICKTIME_ANIMATION, //
+            CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_ANIMATION);
+    public final static Format VIDEO_JPEG = new Format(
+            MediaTypeKey, MediaType.VIDEO,//
+            MimeTypeKey, MIME_QUICKTIME,
+            EncodingKey, ENCODING_QUICKTIME_JPEG, //
+            CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_JPEG);
+    public final static Format VIDEO_PNG = new Format(
+            MediaTypeKey, MediaType.VIDEO,//
+            MimeTypeKey, MIME_QUICKTIME,
+            EncodingKey, ENCODING_QUICKTIME_PNG, //
+            CompressorNameKey, COMPRESSOR_NAME_QUICKTIME_PNG);
 
     /**
      * Creates a new QuickTime writer.
@@ -150,19 +175,23 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
         super(file);
     }
 
+    /**
+     * Creates a new QuickTime writer.
+     *
+     * @param out the output stream.
+     */
+    public QuickTimeWriter(ImageOutputStream out) throws IOException {
+        super(out);
+    }
+
+    @Override
+    public Format getFileFormat() throws IOException {
+        return QUICKTIME;
+    }
+
     @Override
     public Format getFormat(int track) {
         return tracks.get(track).format;
-    }
-
-    @Override
-    public void write (int track, Buffer buf) throws IOException {
-        
-    }
-
-    @Override
-    public void close () throws IOException {
-
     }
 
     /** Adds a track.
@@ -332,10 +361,196 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
                 isCompressed, frameDuration, frameSize, signed, byteOrder);
     }
 
+    @Override
+    public int getTrackCount() {
+        return tracks.size();
+    }
+
+    /** Returns the sampleDuration of the track in seconds. */
+    @Override
+    public Rational getDuration(int track) {
+        Track tr = tracks.get(track);
+        return new Rational(tr.mediaDuration, tr.mediaTimeScale);
+    }
+
     private Codec createCodec(Format fmt) {
         Codec[] codecs = Registry.getInstance().getEncoders(fmt.prepend(MimeTypeKey, MIME_QUICKTIME));
         Codec c= codecs.length == 0 ? null : codecs[0];
         return c;
+    }
+
+    private void createCodec(int track) {
+        Track tr=tracks.get(track);
+        Format fmt = tr.format;
+        tr.codec = createCodec(fmt);
+        String enc = fmt.get(EncodingKey);
+        if (tr.codec != null) {
+            if (fmt.get(MediaTypeKey) == MediaType.VIDEO) {
+                Format vf = (Format) fmt;
+                tr.codec.setInputFormat(fmt.prepend(
+                        MimeTypeKey, MIME_JAVA, EncodingKey, ENCODING_BUFFERED_IMAGE,
+                        DataClassKey, BufferedImage.class));
+
+                if (null == tr.codec.setOutputFormat(
+                        fmt.prepend(
+                        QualityKey, getCompressionQuality(track),
+                        MimeTypeKey, MIME_QUICKTIME,
+                        DataClassKey, byte[].class))) {
+                    throw new UnsupportedOperationException("Input format not supported:" + fmt);
+                }
+                //tr.codec.setQuality(tr.videoQuality);
+            } else {
+                Format vf = (Format) fmt;
+                tr.codec.setInputFormat(fmt.prepend(
+                        MimeTypeKey, MIME_JAVA, EncodingKey, fmt.containsKey(SignedKey) && fmt.get(SignedKey) ? ENCODING_PCM_SIGNED : ENCODING_PCM_UNSIGNED,
+                        DataClassKey, byte[].class));
+                if (tr.codec.setOutputFormat(fmt) == null) {
+                    throw new UnsupportedOperationException("Codec output format not supported:" + fmt + " codec:" + tr.codec);
+                } else {
+                    tr.format = tr.codec.getOutputFormat();
+                }
+                //tr.codec.setQuality(tr.dwQuality);
+            }
+        }
+    }
+
+    /** Returns the codec of the specified track. */
+    public Codec getCodec(int track) {
+        return tracks.get(track).codec;
+    }
+
+    /** Sets the codec for the specified track. */
+    public void setCodec(int track, Codec codec) {
+        tracks.get(track).codec = codec;
+    }
+
+    /** Writes a sample.
+     * Does nothing if the discard-flag in the buffer is set to true.
+     *
+     * @param track The track number.
+     * @param buf The buffer containing the sample data.
+     */
+    @Override
+    public void write(int track, Buffer buf) throws IOException {
+        ensureStarted();
+        Track tr = tracks.get(track);
+
+        // Encode sample data
+        {
+            if (tr.outputBuffer == null) {
+                tr.outputBuffer = new Buffer();
+                tr.outputBuffer.format = tr.format;
+            }
+            Buffer outBuf;
+            if (tr.format.matchesWithout(buf.format,FrameRateKey)) {
+                outBuf = buf;
+            } else {
+                outBuf = tr.outputBuffer;
+                boolean isSync = tr.syncInterval == 0 ? false : tr.sampleCount % tr.syncInterval == 0;
+                buf.setFlag(KEYFRAME, isSync);
+                if (tr.codec == null) {
+                    createCodec(track);
+                    if (tr.codec == null) {
+                        throw new UnsupportedOperationException("No codec for this format " + tr.format);
+                    }
+                }
+
+                tr.codec.process(buf, outBuf);
+            }
+            if (outBuf.isFlag(DISCARD)||outBuf.sampleCount==0) {
+                return;
+            }
+
+            // Compute sample sampleDuration in media time scale
+            Rational sampleDuration;
+            if (tr.inputTime == null) {
+                tr.inputTime = new Rational(0, 1);
+                tr.writeTime = new Rational(0, 1);
+            }
+            tr.inputTime = tr.inputTime.add(outBuf.sampleDuration.multiply(outBuf.sampleCount));
+            Rational exactSampleDuration = tr.inputTime.subtract(tr.writeTime);
+            sampleDuration = exactSampleDuration.floor(tr.mediaTimeScale);
+            if (sampleDuration.compareTo(new Rational(0, 1)) <= 0) {
+                sampleDuration = new Rational(1, tr.mediaTimeScale);
+            }
+            tr.writeTime = tr.writeTime.add(sampleDuration);
+            long sampleDurationInMediaTS = sampleDuration.getNumerator() * (tr.mediaTimeScale / sampleDuration.getDenominator());
+
+            writeSamples(track, buf.sampleCount, (byte[]) outBuf.data, outBuf.offset, outBuf.length,
+                    sampleDurationInMediaTS / buf.sampleCount, outBuf.isFlag(KEYFRAME));
+        }
+    }
+
+    /**
+     * Encodes an image as a video frame and writes it into a video track.
+     *
+     * @param track The track index.
+     * @param image The image of the video frame.
+     * @param duration The sampleDuration of the video frame in media time scale units.
+     *
+    // * @throws IndexOutofBoundsException if the track index is out of bounds.
+     * @throws if the duration is less than 1, or if the dimension of the frame
+     * does not match the dimension of the video.
+     * @throws UnsupportedOperationException if the QuickTimeWriter does not have
+     * a built-in codec for this video format.
+     * @throws IOException if writing the sample data failed.
+     */
+    public void write(int track, BufferedImage image, long duration) throws IOException {
+        if (duration <= 0) {
+            throw new IllegalArgumentException("Duration must be greater 0.");
+        }
+        VideoTrack vt = (VideoTrack) tracks.get(track); // throws index out of bounds exception if illegal track index
+        if (vt.mediaType != MediaType.VIDEO) {
+            throw new IllegalArgumentException("Track " + track + " is not a video track");
+        }
+        if (vt.codec == null) {
+            createCodec(track);
+        }
+        if (vt.codec == null) {
+            throw new UnsupportedOperationException("No codec for this format: " + vt.format);
+        }
+        ensureStarted();
+
+        // Get the dimensions of the first image
+        if (vt.width == -1) {
+            vt.width = image.getWidth();
+            vt.height = image.getHeight();
+        } else {
+            // The dimension of the image must match the dimension of the video track
+            if (vt.width != image.getWidth() || vt.height != image.getHeight()) {
+                throw new IllegalArgumentException("Dimensions of frame[" + tracks.get(track).getSampleCount()
+                        + "] (width=" + image.getWidth() + ", height=" + image.getHeight()
+                        + ") differs from video dimension (width="
+                        + vt.width + ", height=" + vt.height + ") in track " + track + ".");
+            }
+        }
+
+        // Encode pixel data
+        {
+
+            if (vt.outputBuffer == null) {
+                vt.outputBuffer = new Buffer();
+            }
+
+            boolean isSync = vt.syncInterval == 0 ? false : vt.sampleCount % vt.syncInterval == 0;
+
+            Buffer inputBuffer = new Buffer();
+            inputBuffer.setFlag(KEYFRAME, isSync);
+            inputBuffer.data = image;
+            vt.codec.process(inputBuffer, vt.outputBuffer);
+            if (vt.outputBuffer.isFlag(DISCARD)) {
+                return;
+            }
+
+            isSync = vt.outputBuffer.isFlag(KEYFRAME);
+
+            long offset = getRelativeStreamPosition();
+            OutputStream mdatOut = mdatAtom.getOutputStream();
+            mdatOut.write((byte[]) vt.outputBuffer.data, vt.outputBuffer.offset, vt.outputBuffer.length);
+
+            long length = getRelativeStreamPosition() - offset;
+            vt.addSample(new Sample(duration, offset, length), 1, isSync);
+        }
     }
 
     /**
@@ -406,6 +621,11 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
         }
     }
 
+    /** Returns true because QuickTime supports variable frame rates. */
+    public boolean isVFRSupported() {
+        return true;
+    }
+
     /** Returns true if the limit for media samples has been reached.
      * If this limit is reached, no more samples should be added to the movie.
      * <p>
@@ -417,5 +637,9 @@ public class QuickTimeWriter extends QuickTimeOutputStream implements MovieWrite
     @Override
     public boolean isDataLimitReached() {
         return super.isDataLimitReached();
+    }
+    @Override
+    public boolean isEmpty(int track) {
+       return tracks.get(track).isEmpty();
     }
 }

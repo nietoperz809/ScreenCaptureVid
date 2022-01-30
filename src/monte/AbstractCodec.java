@@ -14,8 +14,8 @@ import java.util.ArrayList;
  */
 public abstract class AbstractCodec implements Codec {
 
-    protected final Format[] inputFormats;
-    protected final Format[] outputFormats;
+    protected Format[] inputFormats;
+    protected Format[] outputFormats;
     protected Format inputFormat;
     protected Format outputFormat;
     protected String name="unnamed codec";
@@ -29,7 +29,8 @@ public abstract class AbstractCodec implements Codec {
         this.outputFormats = supportedInputOutputFormats;
     }
 
-    private Format[] getInputFormats () {
+    @Override
+    public Format[] getInputFormats() {
         return inputFormats.clone();
     }
 
@@ -68,6 +69,11 @@ public abstract class AbstractCodec implements Codec {
     }
 
     @Override
+    public Format getInputFormat() {
+        return inputFormat;
+    }
+
+    @Override
     public Format getOutputFormat() {
         return outputFormat;
     }
@@ -75,6 +81,12 @@ public abstract class AbstractCodec implements Codec {
     @Override
     public String getName() {
         return name;
+    }
+
+    /** Empty implementation of the reset method. Don't call super. */
+    @Override
+    public void reset() {
+        // empty
     }
 
     @Override

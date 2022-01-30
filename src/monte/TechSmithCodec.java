@@ -166,6 +166,12 @@ public class TechSmithCodec extends AbstractVideoCodec {
     }
 
     @Override
+    public void reset() {
+        state = null;
+        frameCounter = 0;
+    }
+
+    @Override
     public int process(Buffer in, Buffer out) {
         if (state == null) {
             state = new TechSmithCodecCore();

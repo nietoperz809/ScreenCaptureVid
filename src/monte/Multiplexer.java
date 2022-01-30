@@ -21,5 +21,14 @@ import java.io.IOException;
  * @version 1.0 2011-02-19 Created.
  */
 public interface Multiplexer {
+    /** Writes a sample.
+     * Does nothing if the discard-flag in the buffer is set to true.
+     *
+     * @param track The track number.
+     * @param buf The buffer containing the sample data.
+     */
+    public void write(int track, Buffer buf) throws IOException;
 
+    /** Closes the Multiplexer. */
+    public void close() throws IOException;
 }

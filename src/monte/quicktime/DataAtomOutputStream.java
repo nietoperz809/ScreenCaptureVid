@@ -8,8 +8,9 @@
  * license agreement you entered into with Werner Randelshofer.
  * For details see accompanying license terms.
  */
-package monte;
+package monte.quicktime;
 
+import javax.imageio.stream.ImageOutputStreamImpl;
 import java.io.*;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -23,6 +24,7 @@ import java.util.GregorianCalendar;
  */
 public class DataAtomOutputStream extends FilterOutputStream {
 
+    ImageOutputStreamImpl impl;
     protected static final long MAC_TIMESTAMP_EPOCH = new GregorianCalendar(1904, GregorianCalendar.JANUARY, 1).getTimeInMillis();
     /**
      * The number of bytes written to the data output stream so far. 
@@ -321,6 +323,69 @@ public class DataAtomOutputStream extends FilterOutputStream {
             temp = Long.MAX_VALUE;
         }
         written = temp;
+    }
+
+    public void writeShorts(short[] s, int off, int len) throws IOException {
+        // Fix 4430357 - if off + len < 0, overflow occurred
+        if (off < 0 || len < 0 || off + len > s.length || off + len < 0) {
+            throw new IndexOutOfBoundsException("off < 0 || len < 0 || off + len > s.length!");
+        }
+
+        byte[] b = new byte[len * 2];
+        int boff = 0;
+        for (int i = 0; i < len; i++) {
+            short v = s[off + i];
+            b[boff++] = (byte) (v >>> 8);
+            b[boff++] = (byte) (v >>> 0);
+        }
+
+        write(b, 0, len * 2);
+    }
+
+    public void writeInts(int[] i, int off, int len) throws IOException {
+        // Fix 4430357 - if off + len < 0, overflow occurred
+        if (off < 0 || len < 0 || off + len > i.length || off + len < 0) {
+            throw new IndexOutOfBoundsException("off < 0 || len < 0 || off + len > i.length!");
+        }
+
+        byte[] b = new byte[len * 4];
+        int boff = 0;
+        for (int j = 0; j < len; j++) {
+            int v = i[off + j];
+            b[boff++] = (byte) (v >>> 24);
+            b[boff++] = (byte) (v >>> 16);
+            b[boff++] = (byte) (v >>> 8);
+            b[boff++] = (byte) (v >>> 0);
+        }
+
+        write(b, 0, len * 4);
+    }
+    private byte[] byteBuf = new byte[3];
+
+    public void writeInt24(int v) throws IOException {
+        byteBuf[0] = (byte) (v >>> 16);
+        byteBuf[1] = (byte) (v >>> 8);
+        byteBuf[2] = (byte) (v >>> 0);
+        write(byteBuf, 0, 3);
+    }
+
+    public void writeInts24(int[] i, int off, int len) throws IOException {
+        // Fix 4430357 - if off + len < 0, overflow occurred
+        if (off < 0 || len < 0 || off + len > i.length || off + len < 0) {
+            throw new IndexOutOfBoundsException("off < 0 || len < 0 || off + len > i.length!");
+        }
+
+        byte[] b = new byte[len * 3];
+        int boff = 0;
+        for (int j = 0; j < len; j++) {
+            int v = i[off + j];
+            //b[boff++] = (byte)(v >>> 24);
+            b[boff++] = (byte) (v >>> 16);
+            b[boff++] = (byte) (v >>> 8);
+            b[boff++] = (byte) (v >>> 0);
+        }
+
+        write(b, 0, len * 3);
     }
 
     /**
