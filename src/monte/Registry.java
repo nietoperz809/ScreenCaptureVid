@@ -48,28 +48,6 @@ public abstract class Registry {
     public abstract void putCodec(Format inputFormat, Format outputFormat, String codecClass);
 
     /**
-     * Gets all codecs which can decode the specified format.
-     *
-     * @param format The format.
-     * @return An array of codec class names. If no codec was found, an empty
-     * array is returned.
-     */
-    public final String[] getDecoderClasses(Format format) {
-        return getCodecClasses(format, null);
-    }
-
-    /**
-     * Gets all codecs which can decode the specified format.
-     *
-     * @param format The format.
-     * @return An array of codec class names. If no codec was found, an empty
-     * array is returned.
-     */
-    public final String[] getEncoderClasses(Format format) {
-        return getCodecClasses(null, format);
-    }
-
-    /**
      * Gets all codecs which can transcode from the specified input format to
      * the specified output format.
      *
@@ -81,27 +59,6 @@ public abstract class Registry {
     public abstract String[] getCodecClasses(//
             Format inputFormat,
             Format outputFormat);
-
-    /**
-     * Gets all codecs which can decode the specified format.
-     *
-     * @param inputFormat The input format.
-     * @return An array of codec class names. If no codec was found, an empty
-     * array is returned.
-     */
-    public final Codec[] getDecoders(Format inputFormat) {
-        return getCodecs(inputFormat, null);
-    }
-
-    /**
-     * Gets the first codec which can decode the specified format.
-     *
-     * @param inputFormat The output format.
-     * @return A codec. Returns null if no codec was found.
-     */
-    public Codec getDecoder(Format inputFormat) {
-        return getCodec(inputFormat, null);
-    }
 
     /**
      * Gets all codecs which can encode the specified format.
