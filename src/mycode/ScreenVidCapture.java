@@ -57,8 +57,7 @@ public class ScreenVidCapture {
                                             DepthKey, 16, FrameRateKey, Rational.valueOf(10),
                                             QualityKey, 1.0f,
                                             KeyFrameIntervalKey, (int) (10 * 60) // one keyframe per minute is enough
-                                    ),null,null, new File (outputPath.getText ()));
-                            screenRecorder.setAudioMixer (null);
+                                    ), new File (outputPath.getText ()));
                             screenRecorder.start ();
                         } catch (Exception e) {
                             e.printStackTrace ();
