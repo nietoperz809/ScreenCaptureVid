@@ -9,6 +9,10 @@ import monte.ScreenRecorder;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDropEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -18,7 +22,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import static monte.VideoFormatKeys.*;
 
 public class ScreenVidCapture {
-    enum STATE {IDLE, START_RECORDING, DO_RECORDING, FINISH_RECORDING};
     final Rectangle screenRect = new Rectangle (Toolkit.getDefaultToolkit ().getScreenSize ());
     final Robot robot = new Robot ();
     final AtomicReference<STATE> state = new AtomicReference<> (STATE.IDLE);
@@ -30,67 +33,9 @@ public class ScreenVidCapture {
     private JPanel meinpanel;
     private JLabel label;
 
-    final Runnable MOV = new Runnable () {
-        GraphicsConfiguration cfg = GraphicsEnvironment//
-                .getLocalGraphicsEnvironment()//
-                .getDefaultScreenDevice()//
-                .getDefaultConfiguration();
-        ScreenRecorder screenRecorder;
-
-        @Override
-        public void run () {
-            lab:
-            while(true) {
-                switch (state.get ()) {
-                    case START_RECORDING:
-                        cfg = new JFrame().getGraphicsConfiguration();
-                        try {
-                            screenRecorder = new ScreenRecorder(cfg, screenRect,
-                                    // the file format:
-                                    new Format (MediaTypeKey, MediaType.FILE, MimeTypeKey, "video/quicktime"),
-                                    //
-                                    // the output format for screen capture:
-                                    new Format(MediaTypeKey, MediaType.VIDEO, EncodingKey, "tscc",
-                                            CompressorNameKey, "Techsmith Screen Capture",
-                                            WidthKey, screenRect.width,
-                                            HeightKey, screenRect.height,
-                                            DepthKey, 16, FrameRateKey, Rational.valueOf(10),
-                                            QualityKey, 1.0f,
-                                            KeyFrameIntervalKey, (int) (10 * 60) // one keyframe per minute is enough
-                                    ), new File (outputPath.getText ()));
-                            screenRecorder.start ();
-                        } catch (Exception e) {
-                            e.printStackTrace ();
-                        }
-                        state.set (STATE.DO_RECORDING);
-                        break;
-
-                    case DO_RECORDING:
-                        imageCount++;
-                        label.setText ("" + imageCount);
-                        try {
-                            Thread.sleep (200);
-                        } catch (InterruptedException e) {
-                            return;
-                        }
-                        break;
-
-                    case FINISH_RECORDING:
-                        try {
-                            screenRecorder.stop();
-                        } catch (IOException e) {
-                            e.printStackTrace ();
-                        }
-                        startButton.setEnabled (true);
-                        state.set (STATE.IDLE);
-                        break lab;
-                }
-            }
-        }
-    };
-
     final Runnable H246 = new Runnable () {
         IMediaWriter writer;
+
         @Override
         public void run () {
             lab:
@@ -127,12 +72,86 @@ public class ScreenVidCapture {
             }
         }
     };
+
     private JTextField outputPath;
+
+    final Runnable MOV = new Runnable () {
+        GraphicsConfiguration cfg = GraphicsEnvironment//
+                .getLocalGraphicsEnvironment ()//
+                .getDefaultScreenDevice ()//
+                .getDefaultConfiguration ();
+        ScreenRecorder screenRecorder;
+
+        @Override
+        public void run () {
+            lab:
+            while (true) {
+                switch (state.get ()) {
+                    case START_RECORDING:
+                        cfg = new JFrame ().getGraphicsConfiguration ();
+                        screenRecorder = new ScreenRecorder (cfg, screenRect,
+                                new Format (MediaTypeKey, MediaType.FILE, MimeTypeKey, "video/quicktime"),
+                                new Format (MediaTypeKey, MediaType.VIDEO, EncodingKey, "tscc",
+                                        CompressorNameKey, "Techsmith Screen Capture",
+                                        WidthKey, screenRect.width,
+                                        HeightKey, screenRect.height,
+                                        DepthKey, 16, FrameRateKey, Rational.valueOf (10),
+                                        QualityKey, 1.0f,
+                                        KeyFrameIntervalKey, (int) (10 * 60) // one keyframe per minute is enough
+                                ), new File (outputPath.getText ()));
+                        screenRecorder.start ();
+                        state.set (STATE.DO_RECORDING);
+                        break;
+
+                    case DO_RECORDING:
+                        imageCount++;
+                        label.setText ("" + imageCount);
+                        try {
+                            Thread.sleep (200);
+                        } catch (InterruptedException e) {
+                            return;
+                        }
+                        break;
+
+                    case FINISH_RECORDING:
+                        try {
+                            screenRecorder.stop ();
+                        } catch (IOException e) {
+                            e.printStackTrace ();
+                        }
+                        startButton.setEnabled (true);
+                        state.set (STATE.IDLE);
+                        break lab;
+                }
+            }
+        }
+    };
     private JRadioButton MOVRadioButton;
 
+    /**
+     * Constructor
+     * @throws Exception ifs smth gone wrong
+     */
     public ScreenVidCapture () throws Exception {
         stopButton.setEnabled (false);
         ToolFactory.setTurboCharged (true);
+
+        outputPath.setText (System.getProperty ("user.home") + File.separator + "Videos");
+        outputPath.setToolTipText ("Drop path here ...");
+        outputPath.setDropTarget (new DropTarget () {
+            public synchronized void drop (DropTargetDropEvent evt) {
+                try {
+                    evt.acceptDrop (DnDConstants.ACTION_COPY);
+                    String dropped = evt.getTransferable ().
+                            getTransferData (DataFlavor.javaFileListFlavor).
+                            toString ();
+                    dropped = dropped.substring(1, dropped.length() - 1);
+                    outputPath.setText (dropped);
+                } catch (Exception ex) {
+                    ex.printStackTrace ();
+                }
+            }
+        });
 
         startButton.addActionListener (e -> {
             System.out.println ("Start");
@@ -176,6 +195,7 @@ public class ScreenVidCapture {
         frame.setContentPane (new ScreenVidCapture ().meinpanel);
         frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
         frame.pack ();
+        frame.setResizable (false);
         frame.setVisible (true);
     }
 
@@ -187,4 +207,6 @@ public class ScreenVidCapture {
     private void createUIComponents () {
         // TODO: place custom component creation code here
     }
+
+    enum STATE {IDLE, START_RECORDING, DO_RECORDING, FINISH_RECORDING}
 }

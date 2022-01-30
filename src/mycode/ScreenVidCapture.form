@@ -17,7 +17,7 @@
         <properties>
           <minimumSize width="80" height="30"/>
           <preferredSize width="300" height="30"/>
-          <text value="C:\Users\Administrator\Desktop\pr0n"/>
+          <text value=""/>
         </properties>
       </component>
       <component id="52d50" class="javax.swing.JLabel">
