@@ -41,7 +41,7 @@ public class MOVRecorder extends RecorderBase {
                                     KeyFrameIntervalKey, (10 * 60) // one keyframe per minute is enough
                             ), new File (svc.outputPath.getText ()));
                     screenRecorder.start ();
-                    svc.state.set (ScreenVidCapture.STATE.DO_RECORDING);
+                    svc.state.set (RecorderState.DO_RECORDING);
                     break;
 
                 case DO_RECORDING:
@@ -61,7 +61,7 @@ public class MOVRecorder extends RecorderBase {
                         e.printStackTrace ();
                     }
                     svc.startButton.setEnabled (true);
-                    svc.state.set (ScreenVidCapture.STATE.IDLE);
+                    svc.state.set (RecorderState.IDLE);
                     break lab;
             }
         }

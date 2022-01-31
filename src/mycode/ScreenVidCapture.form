@@ -1,68 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="mycode.ScreenVidCapture">
-  <grid id="27dc6" binding="mainPanel" layout-manager="GridBagLayout">
+  <grid id="27dc6" binding="mainPanel" layout-manager="FlowLayout" hgap="2" vgap="2" flow-align="1">
     <constraints>
-      <xy x="1" y="-51" width="608" height="295"/>
+      <xy x="1" y="1" width="643" height="38"/>
     </constraints>
     <properties/>
     <border type="none"/>
     <children>
-      <component id="f6f15" class="javax.swing.JTextField" binding="outputPath">
-        <constraints>
-          <grid row="0" column="0" row-span="1" col-span="3" vsize-policy="0" hsize-policy="6" anchor="8" fill="0" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
-          </grid>
-          <gridbag weightx="0.0" weighty="0.0"/>
-        </constraints>
+      <component id="1fbc0" class="javax.swing.JTextField" binding="outputPath">
+        <constraints/>
         <properties>
           <minimumSize width="80" height="30"/>
           <preferredSize width="300" height="30"/>
           <text value=""/>
         </properties>
       </component>
-      <component id="52d50" class="javax.swing.JLabel">
-        <constraints>
-          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
-          <gridbag weightx="0.0" weighty="0.0"/>
-        </constraints>
+      <component id="90f10" class="javax.swing.JLabel">
+        <constraints/>
         <properties>
-          <text value="Vid Type:"/>
+          <font size="10"/>
+          <text value="Type:"/>
         </properties>
       </component>
-      <component id="d2c8e" class="javax.swing.JRadioButton" binding="MOVRadioButton" default-binding="true">
-        <constraints>
-          <grid row="1" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-          <gridbag weightx="0.0" weighty="0.0"/>
-        </constraints>
+      <component id="aefef" class="javax.swing.JRadioButton" binding="MOVRadioButton" default-binding="true">
+        <constraints/>
         <properties>
+          <font size="10"/>
           <text value="MOV"/>
         </properties>
       </component>
-      <component id="3f9ba" class="javax.swing.JButton" binding="startButton" default-binding="true">
-        <constraints>
-          <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
-          <gridbag weightx="0.0" weighty="0.0"/>
-        </constraints>
+      <component id="e75f" class="javax.swing.JButton" binding="startButton" default-binding="true">
+        <constraints/>
         <properties>
+          <alignmentY value="0.0"/>
+          <font size="10"/>
+          <preferredSize width="60" height="20"/>
           <text value="Start"/>
         </properties>
       </component>
-      <component id="eec8" class="javax.swing.JButton" binding="stopButton" default-binding="true">
-        <constraints>
-          <grid row="2" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-          <gridbag weightx="0.0" weighty="0.0"/>
-        </constraints>
+      <component id="c7ee2" class="javax.swing.JLabel" binding="label">
+        <constraints/>
         <properties>
-          <text value="Stop"/>
+          <font size="10"/>
+          <text value="0000"/>
         </properties>
       </component>
-      <component id="f2438" class="javax.swing.JLabel" binding="label">
-        <constraints>
-          <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-          <gridbag weightx="0.0" weighty="0.0"/>
-        </constraints>
+      <component id="343d1" class="javax.swing.JButton" binding="stopButton" default-binding="true">
+        <constraints/>
         <properties>
-          <text value="0"/>
+          <font size="10"/>
+          <preferredSize width="60" height="20"/>
+          <text value="Stop"/>
         </properties>
       </component>
     </children>

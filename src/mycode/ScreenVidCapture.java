@@ -16,19 +16,20 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ScreenVidCapture {
     final Rectangle screenRect = new Rectangle (Toolkit.getDefaultToolkit ().getScreenSize ());
     final Robot robot = new Robot ();
-    final AtomicReference<STATE> state = new AtomicReference<> (STATE.IDLE);
+    final AtomicReference<RecorderState> state = new AtomicReference<> (RecorderState.IDLE);
     public JButton startButton;
     public JButton stopButton;
+    protected JLabel label;
+    protected JTextField outputPath;
     int imageCount;
     String filename;
     private JPanel mainPanel;
-    protected JLabel label;
-    protected JTextField outputPath;
     private JRadioButton MOVRadioButton;
 
     /**
      * Constructor
-     * @throws Exception ifs smth gone wrong
+     *
+     * @throws Exception if smth gone wrong
      */
     public ScreenVidCapture () throws Exception {
         stopButton.setEnabled (false);
@@ -37,15 +38,15 @@ public class ScreenVidCapture {
         outputPath.setToolTipText ("Drop path here ...");
         outputPath.setDropTarget (new DropTarget () {
             public synchronized void drop (DropTargetDropEvent evt) {
+                evt.acceptDrop (DnDConstants.ACTION_COPY);
                 try {
-                    evt.acceptDrop (DnDConstants.ACTION_COPY);
                     String dropped = evt.getTransferable ().
                             getTransferData (DataFlavor.javaFileListFlavor).
                             toString ();
-                    dropped = dropped.substring(1, dropped.length() - 1);
+                    dropped = dropped.substring (1, dropped.length () - 1);
                     outputPath.setText (dropped);
-                } catch (Exception ex) {
-                    ex.printStackTrace ();
+                } catch (Exception e) {
+                    e.printStackTrace ();
                 }
             }
         });
@@ -57,7 +58,7 @@ public class ScreenVidCapture {
             filename = outputPath.getText () + File.separator +
                     System.currentTimeMillis () + ".mp4";
             imageCount = 0;
-            state.set (STATE.START_RECORDING);
+            state.set (RecorderState.START_RECORDING);
             if (MOVRadioButton.isSelected ()) {
                 new MOVRecorder (this);
             } else {
@@ -68,7 +69,7 @@ public class ScreenVidCapture {
         stopButton.addActionListener (e -> {
             System.out.println ("Stop");
             stopButton.setEnabled (false);
-            state.set (STATE.FINISH_RECORDING);
+            state.set (RecorderState.FINISH_RECORDING);
         });
     }
 
@@ -78,9 +79,9 @@ public class ScreenVidCapture {
         frame.addWindowListener (new WindowAdapter () {
             @Override
             public void windowClosing (WindowEvent e) {
-                if (svc.state.get () == STATE.DO_RECORDING) {
-                    svc.state.set (STATE.FINISH_RECORDING);
-                    while (svc.state.get () != STATE.IDLE) {
+                if (svc.state.get () == RecorderState.DO_RECORDING) {
+                    svc.state.set (RecorderState.FINISH_RECORDING);
+                    while (svc.state.get () != RecorderState.IDLE) {
                         try {
                             Thread.sleep (100);
                         } catch (InterruptedException ex) {
@@ -100,6 +101,4 @@ public class ScreenVidCapture {
     private void createUIComponents () {
         // TODO: place custom component creation code here
     }
-
-    enum STATE {IDLE, START_RECORDING, DO_RECORDING, FINISH_RECORDING}
 }

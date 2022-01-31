@@ -7,8 +7,8 @@ import com.xuggle.xuggler.ICodec;
 import java.awt.image.BufferedImage;
 import java.util.concurrent.TimeUnit;
 
-import static mycode.ScreenVidCapture.STATE.DO_RECORDING;
-import static mycode.ScreenVidCapture.STATE.IDLE;
+import static mycode.RecorderState.DO_RECORDING;
+import static mycode.RecorderState.IDLE;
 
 public class H264Recorder extends RecorderBase {
     private IMediaWriter writer;
