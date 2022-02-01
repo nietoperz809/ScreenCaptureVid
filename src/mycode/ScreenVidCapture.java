@@ -51,26 +51,29 @@ public class ScreenVidCapture {
             }
         });
 
-        startButton.addActionListener (e -> {
-            System.out.println ("Start");
-            stopButton.setEnabled (true);
-            startButton.setEnabled (false);
-            filename = outputPath.getText () + File.separator +
-                    System.currentTimeMillis () + ".mp4";
-            imageCount = 0;
-            state.set (RecorderState.START_RECORDING);
-            if (MOVRadioButton.isSelected ()) {
-                new MOVRecorder (this);
-            } else {
-                new H264Recorder (this);
-            }
-        });
+        startButton.addActionListener (e -> startRecording());
+        stopButton.addActionListener (e -> stopRecording());
+    }
 
-        stopButton.addActionListener (e -> {
-            System.out.println ("Stop");
-            stopButton.setEnabled (false);
-            state.set (RecorderState.FINISH_RECORDING);
-        });
+    public void stopRecording() {
+        System.out.println ("Stop");
+        stopButton.setEnabled (false);
+        state.set (RecorderState.FINISH_RECORDING);
+    }
+
+    public void startRecording() {
+        System.out.println ("Start");
+        stopButton.setEnabled (true);
+        startButton.setEnabled (false);
+        filename = outputPath.getText () + File.separator +
+                System.currentTimeMillis () + ".mp4";
+        imageCount = 0;
+        state.set (RecorderState.START_RECORDING);
+        if (MOVRadioButton.isSelected ()) {
+            new MOVRecorder (this);
+        } else {
+            new H264Recorder (this);
+        }
     }
 
     public static void main (String[] args) throws Exception {
