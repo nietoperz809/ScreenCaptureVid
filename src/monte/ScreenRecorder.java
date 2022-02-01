@@ -11,6 +11,7 @@
 package monte;
 
 import monte.quicktime.QuickTimeWriter;
+import mycode.CursorPainter;
 
 import javax.swing.*;
 import java.awt.*;
@@ -60,6 +61,7 @@ public class ScreenRecorder /*extends AbstractStateModel*/ {
      * The device from which screen captures are generated.
      */
     private final GraphicsDevice captureDevice;
+    private final CursorPainter cursorPainter;
     /**
      * The start time of the recording.
      */
@@ -127,9 +129,10 @@ public class ScreenRecorder /*extends AbstractStateModel*/ {
                            Rectangle captureArea,
                            Format fileFormat,
                            Format screenFormat,
-                           File movieFolder)
+                           File movieFolder,
+                           CursorPainter cp)
     {
-
+        cursorPainter = cp;
         this.fileFormat = fileFormat;
         this.screenFormat = screenFormat;
         this.captureDevice = cfg.getDevice ();
@@ -550,6 +553,7 @@ public class ScreenRecorder /*extends AbstractStateModel*/ {
             long timeBeforeCapture = System.currentTimeMillis ();
             try {
                 screenCapture = robot.createScreenCapture (captureArea);
+                recorder.cursorPainter.paint (screenCapture);
             } catch (IllegalMonitorStateException e) {
                 return;
             }

@@ -12,6 +12,7 @@ import static mycode.RecorderState.IDLE;
 
 public class H264Recorder extends RecorderBase {
     private IMediaWriter writer;
+    private CursorPainter cp = new CursorPainter (Tools.getBitmap ("smaller.png"));
 
     public H264Recorder (ScreenVidCapture svc) {
         super (svc);
@@ -20,35 +21,36 @@ public class H264Recorder extends RecorderBase {
     @Override
     public void run () {
         lab:
-        while (true) {
-            switch (svc.state.get ()) {
-                case START_RECORDING:
-                    writer = ToolFactory.makeWriter (svc.filename);
-                    writer.addVideoStream (0, 0,
-                            ICodec.ID.CODEC_ID_H264,
-                            Tools.halfbut2 (svc.screenRect.width),
-                            Tools.halfbut2 (svc.screenRect.height));
-                    svc.state.set (DO_RECORDING);
-                    break;
+        try {
+            while (true) {
+                switch (svc.state.get ()) {
+                    case START_RECORDING:
+                        writer = ToolFactory.makeWriter (svc.filename);
+                        writer.addVideoStream (0, 0,
+                                ICodec.ID.CODEC_ID_H264,
+                                Tools.halfbut2 (svc.screenRect.width),
+                                Tools.halfbut2 (svc.screenRect.height));
+                        svc.state.set (DO_RECORDING);
+                        break;
 
-                case DO_RECORDING:
-                    BufferedImage image = svc.robot.createScreenCapture (svc.screenRect);
-                    BufferedImage bgrScreen = Tools.convertBitmap (image, BufferedImage.TYPE_3BYTE_BGR);
-                    svc.imageCount++;
-                    writer.encodeVideo (0, bgrScreen, 300L * svc.imageCount, TimeUnit.MILLISECONDS);
-                    svc.label.setText ("" + svc.imageCount);
-                    try {
+                    case DO_RECORDING:
+                        BufferedImage image = svc.robot.createScreenCapture (svc.screenRect);
+                        cp.paint (image);
+                        BufferedImage bgrScreen = Tools.convertBitmap (image, BufferedImage.TYPE_3BYTE_BGR);
+                        svc.imageCount++;
+                        writer.encodeVideo (0, bgrScreen, 300L * svc.imageCount, TimeUnit.MILLISECONDS);
+                        svc.label.setText ("" + svc.imageCount);
                         Thread.sleep (100);
-                    } catch (InterruptedException e) {
-                        return;
-                    }
-                    break;
+                        break;
 
-                case FINISH_RECORDING:
-                    writer.close ();
-                    svc.state.set (IDLE);
-                    break lab; // end thread
+                    case FINISH_RECORDING:
+                        writer.close ();
+                        svc.state.set (IDLE);
+                        break lab; // end thread
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace ();
         }
     }
 }

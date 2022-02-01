@@ -6,11 +6,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="XuggleTest" />
+        <module name="MyScreenRecorder" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="XuggleTest" target="8" />
+      <module name="MyScreenRecorder" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>

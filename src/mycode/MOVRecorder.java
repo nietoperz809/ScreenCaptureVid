@@ -26,43 +26,39 @@ public class MOVRecorder extends RecorderBase {
     @Override
     public void run () {
         lab:
-        while (true) {
-            switch (svc.state.get ()) {
-                case START_RECORDING:
-                    cfg = new JFrame ().getGraphicsConfiguration ();
-                    screenRecorder = new ScreenRecorder (cfg, svc.screenRect,
-                            new Format (MediaTypeKey, FormatKeys.MediaType.FILE, MimeTypeKey, "video/quicktime"),
-                            new Format (MediaTypeKey, FormatKeys.MediaType.VIDEO, EncodingKey, "tscc",
-                                    CompressorNameKey, "Techsmith Screen Capture",
-                                    WidthKey, svc.screenRect.width,
-                                    HeightKey, svc.screenRect.height,
-                                    DepthKey, 16, FrameRateKey, Rational.valueOf (10),
-                                    QualityKey, 1.0f,
-                                    KeyFrameIntervalKey, (10 * 60) // one keyframe per minute is enough
-                            ), new File (svc.outputPath.getText ()));
-                    screenRecorder.start ();
-                    svc.state.set (RecorderState.DO_RECORDING);
-                    break;
+        try {
+            while (true) {
+                switch (svc.state.get ()) {
+                    case START_RECORDING:
+                        cfg = new JFrame ().getGraphicsConfiguration ();
+                        screenRecorder = new ScreenRecorder (cfg, svc.screenRect,
+                                new Format (MediaTypeKey, MediaType.FILE, MimeTypeKey, "video/quicktime"),
+                                new Format (MediaTypeKey, MediaType.VIDEO, EncodingKey, "tscc",
+                                        CompressorNameKey, "Techsmith Screen Capture",
+                                        WidthKey, svc.screenRect.width,
+                                        HeightKey, svc.screenRect.height,
+                                        DepthKey, 16, FrameRateKey, Rational.valueOf (10),
+                                        QualityKey, 1.0f,
+                                        KeyFrameIntervalKey, (10 * 60) ),
+                                new File (svc.outputPath.getText ()),
+                                new CursorPainter (Tools.getBitmap ("smaller.png")));
+                        screenRecorder.start ();
+                        svc.state.set (RecorderState.DO_RECORDING);
+                        break;
 
-                case DO_RECORDING:
-                    svc.imageCount++;
-                    svc.label.setText ("" + svc.imageCount);
-                    try {
+                    case DO_RECORDING:
+                        svc.label.setText ("" + (++svc.imageCount));
                         Thread.sleep (200);
-                    } catch (InterruptedException e) {
-                        return;
-                    }
-                    break;
+                        break;
 
-                case FINISH_RECORDING:
-                    try {
+                    case FINISH_RECORDING:
                         screenRecorder.stop ();
-                    } catch (IOException e) {
-                        e.printStackTrace ();
-                    }
-                    svc.state.set (RecorderState.IDLE);
-                    break lab;
+                        svc.state.set (RecorderState.IDLE);
+                        break lab;
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace ();
         }
     }
 }

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/XuggleTest.iml" filepath="$PROJECT_DIR$/XuggleTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MyScreenRecorder.iml" filepath="$PROJECT_DIR$/MyScreenRecorder.iml" />
     </modules>
   </component>
 </project>
