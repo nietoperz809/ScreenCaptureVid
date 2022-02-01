@@ -46,7 +46,6 @@ public class H264Recorder extends RecorderBase {
 
                 case FINISH_RECORDING:
                     writer.close ();
-                    svc.startButton.setEnabled (true);
                     svc.state.set (IDLE);
                     break lab; // end thread
             }

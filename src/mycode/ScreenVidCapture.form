@@ -2,7 +2,7 @@
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="mycode.ScreenVidCapture">
   <grid id="27dc6" binding="mainPanel" layout-manager="FlowLayout" hgap="2" vgap="2" flow-align="1">
     <constraints>
-      <xy x="1" y="1" width="643" height="44"/>
+      <xy x="1" y="1" width="643" height="54"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -15,6 +15,18 @@
           <text value=""/>
         </properties>
       </component>
+      <component id="7f365" class="javax.swing.JToggleButton" binding="toggleButton">
+        <constraints/>
+        <properties>
+          <enabled value="true"/>
+          <maximumSize width="78" height="50"/>
+          <minimumSize width="78" height="50"/>
+          <preferredSize width="78" height="50"/>
+          <requestFocusEnabled value="false"/>
+          <selected value="false"/>
+          <text value="Rec"/>
+        </properties>
+      </component>
       <component id="aefef" class="javax.swing.JRadioButton" binding="MOVRadioButton" default-binding="true">
         <constraints/>
         <properties>
@@ -22,36 +34,11 @@
           <text value="MOV"/>
         </properties>
       </component>
-      <component id="e75f" class="javax.swing.JButton" binding="startButton" default-binding="true">
-        <constraints/>
-        <properties>
-          <actionCommand value="Start"/>
-          <alignmentY value="0.0"/>
-          <background color="-4256754"/>
-          <font size="10"/>
-          <label value="Rec"/>
-          <maximumSize width="78" height="40"/>
-          <minimumSize width="78" height="40"/>
-          <preferredSize width="60" height="40"/>
-          <requestFocusEnabled value="false"/>
-          <text value="Rec"/>
-        </properties>
-      </component>
       <component id="c7ee2" class="javax.swing.JLabel" binding="label">
         <constraints/>
         <properties>
           <font size="10"/>
           <text value="0000"/>
-        </properties>
-      </component>
-      <component id="343d1" class="javax.swing.JButton" binding="stopButton" default-binding="true">
-        <constraints/>
-        <properties>
-          <background color="-16777216"/>
-          <font size="10"/>
-          <label value="Stop"/>
-          <preferredSize width="60" height="40"/>
-          <text value="Stop"/>
         </properties>
       </component>
     </children>

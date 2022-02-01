@@ -17,14 +17,13 @@ public class ScreenVidCapture {
     final Rectangle screenRect = new Rectangle (Toolkit.getDefaultToolkit ().getScreenSize ());
     final Robot robot = new Robot ();
     final AtomicReference<RecorderState> state = new AtomicReference<> (RecorderState.IDLE);
-    public JButton startButton;
-    public JButton stopButton;
     protected JLabel label;
     protected JTextField outputPath;
     int imageCount;
     String filename;
     private JPanel mainPanel;
     private JRadioButton MOVRadioButton;
+    private JToggleButton toggleButton;
 
     /**
      * Constructor
@@ -32,7 +31,6 @@ public class ScreenVidCapture {
      * @throws Exception if smth gone wrong
      */
     public ScreenVidCapture () throws Exception {
-        stopButton.setEnabled (false);
         ToolFactory.setTurboCharged (true);
         outputPath.setText (System.getProperty ("user.home") + File.separator + "Videos");
         outputPath.setToolTipText ("Drop path here ...");
@@ -51,20 +49,25 @@ public class ScreenVidCapture {
             }
         });
 
-        startButton.addActionListener (e -> startRecording());
-        stopButton.addActionListener (e -> stopRecording());
+        toggleButton.addActionListener (e -> {
+            if (toggleButton.isSelected ()) {
+                mainPanel.setBackground (Color.RED);
+                startRecording ();
+            }
+            else {
+                mainPanel.setBackground (null);
+                stopRecording();
+            }
+        });
     }
 
     public void stopRecording() {
         System.out.println ("Stop");
-        stopButton.setEnabled (false);
         state.set (RecorderState.FINISH_RECORDING);
     }
 
     public void startRecording() {
         System.out.println ("Start");
-        stopButton.setEnabled (true);
-        startButton.setEnabled (false);
         filename = outputPath.getText () + File.separator +
                 System.currentTimeMillis () + ".mp4";
         imageCount = 0;
@@ -99,9 +102,5 @@ public class ScreenVidCapture {
         frame.pack ();
         frame.setResizable (false);
         frame.setVisible (true);
-    }
-
-    private void createUIComponents () {
-        // TODO: place custom component creation code here
     }
 }

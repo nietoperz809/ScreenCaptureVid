@@ -60,7 +60,6 @@ public class MOVRecorder extends RecorderBase {
                     } catch (IOException e) {
                         e.printStackTrace ();
                     }
-                    svc.startButton.setEnabled (true);
                     svc.state.set (RecorderState.IDLE);
                     break lab;
             }
