@@ -7,6 +7,12 @@
     <properties/>
     <border type="none"/>
     <children>
+      <component id="354b9" class="javax.swing.JRadioButton" binding="showMouse">
+        <constraints/>
+        <properties>
+          <text value="With Mouse"/>
+        </properties>
+      </component>
       <component id="1fbc0" class="javax.swing.JTextField" binding="outputPath">
         <constraints/>
         <properties>

@@ -41,7 +41,7 @@ public class MOVRecorder extends RecorderBase {
                                         QualityKey, 1.0f,
                                         KeyFrameIntervalKey, (10 * 60) ),
                                 new File (svc.outputPath.getText ()),
-                                new CursorPainter (Tools.getBitmap ("smaller.png")));
+                                svc.getCursorPainter ());
                         screenRecorder.start ();
                         svc.state.set (RecorderState.DO_RECORDING);
                         break;

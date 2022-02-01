@@ -12,7 +12,6 @@ import static mycode.RecorderState.IDLE;
 
 public class H264Recorder extends RecorderBase {
     private IMediaWriter writer;
-    private CursorPainter cp = new CursorPainter (Tools.getBitmap ("smaller.png"));
 
     public H264Recorder (ScreenVidCapture svc) {
         super (svc);
@@ -35,7 +34,7 @@ public class H264Recorder extends RecorderBase {
 
                     case DO_RECORDING:
                         BufferedImage image = svc.robot.createScreenCapture (svc.screenRect);
-                        cp.paint (image);
+                        svc.getCursorPainter ().paint (image);
                         BufferedImage bgrScreen = Tools.convertBitmap (image, BufferedImage.TYPE_3BYTE_BGR);
                         svc.imageCount++;
                         writer.encodeVideo (0, bgrScreen, 300L * svc.imageCount, TimeUnit.MILLISECONDS);
