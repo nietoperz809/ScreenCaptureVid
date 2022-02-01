@@ -33,13 +33,16 @@ public class H264Recorder extends RecorderBase {
                         break;
 
                     case DO_RECORDING:
-                        BufferedImage image = svc.robot.createScreenCapture (svc.screenRect);
-                        svc.getCursorPainter ().paint (image);
+                        BufferedImage image = Tools.robot.createScreenCapture (svc.screenRect);
+                        CursorPainter cp = svc.getCursorPainter();
+                        if (cp != null)
+                            cp.paint (image);
                         BufferedImage bgrScreen = Tools.convertBitmap (image, BufferedImage.TYPE_3BYTE_BGR);
                         svc.imageCount++;
                         writer.encodeVideo (0, bgrScreen, 300L * svc.imageCount, TimeUnit.MILLISECONDS);
                         svc.label.setText ("" + svc.imageCount);
-                        Thread.sleep (100);
+                        Tools.robot.delay (100);
+                        //Thread.sleep (100);
                         break;
 
                     case FINISH_RECORDING:

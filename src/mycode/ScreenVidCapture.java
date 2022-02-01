@@ -10,20 +10,14 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 
-/**
- * Mein toller Screen Recoder!!!
- */
 public class ScreenVidCapture {
     final Rectangle screenRect = new Rectangle (Toolkit.getDefaultToolkit ().getScreenSize ());
-    final Robot robot = new Robot ();
     final AtomicReference<RecorderState> state = new AtomicReference<> (RecorderState.IDLE);
     private CursorPainter cursorPainter;
     protected JLabel label;
@@ -109,11 +103,7 @@ public class ScreenVidCapture {
                 if (svc.state.get () == RecorderState.DO_RECORDING) {
                     svc.state.set (RecorderState.FINISH_RECORDING);
                     while (svc.state.get () != RecorderState.IDLE) {
-                        try {
-                            Thread.sleep (100);
-                        } catch (InterruptedException ex) {
-                            ex.printStackTrace ();
-                        }
+                        Tools.robot.delay (100);
                     }
                 }
             }

@@ -9,11 +9,20 @@ import java.io.InputStream;
 import java.util.Objects;
 
 public class Tools {
+    public static Robot robot;
+
+    static {
+        try {
+            robot = new Robot();
+        } catch (AWTException e) {
+            e.printStackTrace ();
+        }
+    }
 
     public static BufferedImage getBitmap (String name)
     {
         try {
-            return ImageIO.read(Objects.requireNonNull (getResource("small.png")));
+            return ImageIO.read(Objects.requireNonNull (getResource(name)));
         } catch (IOException e) {
             e.printStackTrace ();
             return null;

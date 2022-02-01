@@ -48,7 +48,8 @@ public class MOVRecorder extends RecorderBase {
 
                     case DO_RECORDING:
                         svc.label.setText ("" + (++svc.imageCount));
-                        Thread.sleep (200);
+                        Tools.robot.delay(200);
+                        //Thread.sleep (200);
                         break;
 
                     case FINISH_RECORDING:

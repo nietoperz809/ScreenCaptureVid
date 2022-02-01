@@ -553,7 +553,9 @@ public class ScreenRecorder /*extends AbstractStateModel*/ {
             long timeBeforeCapture = System.currentTimeMillis ();
             try {
                 screenCapture = robot.createScreenCapture (captureArea);
-                recorder.cursorPainter.paint (screenCapture);
+                CursorPainter cp = recorder.cursorPainter;
+                if (cp != null)
+                    cp.paint (screenCapture);
             } catch (IllegalMonitorStateException e) {
                 return;
             }
