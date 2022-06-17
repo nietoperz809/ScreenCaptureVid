@@ -17,8 +17,8 @@ import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ScreenVidCapture {
-    final Rectangle screenRect = new Rectangle (Toolkit.getDefaultToolkit ().getScreenSize ());
-    final AtomicReference<RecorderState> state = new AtomicReference<> (RecorderState.IDLE);
+    final Rectangle screenRect = new Rectangle(Toolkit.getDefaultToolkit().getScreenSize());
+    final AtomicReference<RecorderState> state = new AtomicReference<>(RecorderState.IDLE);
     private CursorPainter cursorPainter;
     protected JLabel label;
     protected JTextField outputPath;
@@ -29,97 +29,96 @@ public class ScreenVidCapture {
     private JToggleButton toggleButton;
     private JRadioButton showMouse;
 
-    public CursorPainter getCursorPainter () {
+    public CursorPainter getCursorPainter() {
         return cursorPainter;
     }
 
     /**
      * Constructor
      *
-     * @throws Exception if smth gone wrong
-     */
-    public ScreenVidCapture () throws Exception {
-        ToolFactory.setTurboCharged (true);
-        outputPath.setText (System.getProperty ("user.home") + File.separator + "Videos");
-        outputPath.setToolTipText ("Drop path here ...");
-        outputPath.setDropTarget (new DropTarget () {
-            public synchronized void drop (DropTargetDropEvent evt) {
-                evt.acceptDrop (DnDConstants.ACTION_COPY);
+        */
+    public ScreenVidCapture() /*throws Exception*/ {
+        ToolFactory.setTurboCharged(true);
+        outputPath.setText(System.getProperty("user.home") + File.separator + "Videos");
+        outputPath.setToolTipText("Drop path here ...");
+        outputPath.setDropTarget(new DropTarget() {
+            public synchronized void drop(DropTargetDropEvent evt) {
+                evt.acceptDrop(DnDConstants.ACTION_COPY);
                 try {
-                    String dropped = evt.getTransferable ().
-                            getTransferData (DataFlavor.javaFileListFlavor).
-                            toString ();
-                    dropped = dropped.substring (1, dropped.length () - 1);
-                    outputPath.setText (dropped);
+                    String dropped = evt.getTransferable().
+                            getTransferData(DataFlavor.javaFileListFlavor).
+                            toString();
+                    dropped = dropped.substring(1, dropped.length() - 1);
+                    outputPath.setText(dropped);
                 } catch (Exception e) {
-                    e.printStackTrace ();
+                    e.printStackTrace();
                 }
             }
         });
 
-        showMouse.addActionListener (e -> {
-            if (showMouse.isSelected ()) {
-                cursorPainter = new CursorPainter (Tools.getBitmap ("smaller.png"));
+        showMouse.addActionListener(e -> {
+            if (showMouse.isSelected()) {
+                cursorPainter = new CursorPainter(Tools.getBitmap("smaller.png"));
             } else {
                 cursorPainter = null;
             }
         });
 
-        toggleButton.addActionListener (e -> {
-            if (toggleButton.isSelected ()) {
-                mainPanel.setBackground (Color.RED);
-                startRecording ();
+        toggleButton.addActionListener(e -> {
+            if (toggleButton.isSelected()) {
+                mainPanel.setBackground(Color.RED);
+                startRecording();
             } else {
-                mainPanel.setBackground (null);
-                stopRecording ();
+                mainPanel.setBackground(null);
+                stopRecording();
             }
         });
     }
 
-    public void stopRecording () {
-        System.out.println ("Stop");
-        state.set (RecorderState.FINISH_RECORDING);
+    public void stopRecording() {
+        System.out.println("Stop");
+        state.set(RecorderState.FINISH_RECORDING);
     }
 
-    public void startRecording () {
-        System.out.println ("Start");
-        filename = outputPath.getText () + File.separator +
-                System.currentTimeMillis () + ".mp4";
+    public void startRecording() {
+        System.out.println("Start");
+        filename = outputPath.getText() + File.separator +
+                System.currentTimeMillis() + ".mp4";
         imageCount = 0;
-        state.set (RecorderState.START_RECORDING);
-        if (MOVRadioButton.isSelected ()) {
-            new MOVRecorder (this);
+        state.set(RecorderState.START_RECORDING);
+        if (MOVRadioButton.isSelected()) {
+            new MOVRecorder(this);
         } else {
-            new H264Recorder (this);
+            new H264Recorder(this);
         }
     }
 
-    public static void main (String[] args) throws Exception {
-        JFrame frame = new JFrame ("ScreenRecorder");
-        ScreenVidCapture svc = new ScreenVidCapture ();
-        frame.addWindowListener (new WindowAdapter () {
+    public static void main(String[] args) /*throws Exception*/ {
+        JFrame frame = new JFrame("ScreenRecorder");
+        ScreenVidCapture svc = new ScreenVidCapture();
+        frame.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing (WindowEvent e) {
-                if (svc.state.get () == RecorderState.DO_RECORDING) {
-                    svc.state.set (RecorderState.FINISH_RECORDING);
-                    while (svc.state.get () != RecorderState.IDLE) {
-                        Tools.robot.delay (100);
+            public void windowClosing(WindowEvent e) {
+                if (svc.state.get() == RecorderState.DO_RECORDING) {
+                    svc.state.set(RecorderState.FINISH_RECORDING);
+                    while (svc.state.get() != RecorderState.IDLE) {
+                        Tools.robot.delay(100);
                     }
                 }
             }
         });
-        frame.setContentPane (svc.mainPanel);
-        frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-        frame.pack ();
-        frame.setResizable (false);
-        frame.setVisible (true);
+        frame.setContentPane(svc.mainPanel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setResizable(false);
+        frame.setVisible(true);
     }
 
     {
 // GUI initializer generated by IntelliJ IDEA GUI Designer
 // >>> IMPORTANT!! <<<
 // DO NOT EDIT OR ADD ANY CODE HERE!
-        $$$setupUI$$$ ();
+        $$$setupUI$$$();
     }
 
     /**
@@ -129,64 +128,64 @@ public class ScreenVidCapture {
      *
      * @noinspection ALL
      */
-    private void $$$setupUI$$$ () {
-        mainPanel = new JPanel ();
-        mainPanel.setLayout (new FlowLayout (FlowLayout.CENTER, 2, 2));
-        showMouse = new JRadioButton ();
-        showMouse.setText ("With Mouse");
-        mainPanel.add (showMouse);
-        outputPath = new JTextField ();
-        outputPath.setMinimumSize (new Dimension (80, 30));
-        outputPath.setPreferredSize (new Dimension (300, 30));
-        outputPath.setText ("");
-        mainPanel.add (outputPath);
-        toggleButton = new JToggleButton ();
-        toggleButton.setEnabled (true);
-        toggleButton.setMaximumSize (new Dimension (78, 50));
-        toggleButton.setMinimumSize (new Dimension (78, 50));
-        toggleButton.setPreferredSize (new Dimension (78, 50));
-        toggleButton.setRequestFocusEnabled (false);
-        toggleButton.setSelected (false);
-        toggleButton.setText ("Rec");
-        mainPanel.add (toggleButton);
-        MOVRadioButton = new JRadioButton ();
-        Font MOVRadioButtonFont = this.$$$getFont$$$ (null, -1, 10, MOVRadioButton.getFont ());
-        if (MOVRadioButtonFont != null) MOVRadioButton.setFont (MOVRadioButtonFont);
-        MOVRadioButton.setText ("MOV");
-        mainPanel.add (MOVRadioButton);
-        label = new JLabel ();
-        Font labelFont = this.$$$getFont$$$ (null, -1, 10, label.getFont ());
-        if (labelFont != null) label.setFont (labelFont);
-        label.setText ("0000");
-        mainPanel.add (label);
+    private void $$$setupUI$$$() {
+        mainPanel = new JPanel();
+        mainPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 2, 2));
+        showMouse = new JRadioButton();
+        showMouse.setText("With Mouse");
+        mainPanel.add(showMouse);
+        outputPath = new JTextField();
+        outputPath.setMinimumSize(new Dimension(80, 30));
+        outputPath.setPreferredSize(new Dimension(300, 30));
+        outputPath.setText("");
+        mainPanel.add(outputPath);
+        toggleButton = new JToggleButton();
+        toggleButton.setEnabled(true);
+        toggleButton.setMaximumSize(new Dimension(78, 50));
+        toggleButton.setMinimumSize(new Dimension(78, 50));
+        toggleButton.setPreferredSize(new Dimension(78, 50));
+        toggleButton.setRequestFocusEnabled(false);
+        toggleButton.setSelected(false);
+        toggleButton.setText("Rec");
+        mainPanel.add(toggleButton);
+        MOVRadioButton = new JRadioButton();
+        Font MOVRadioButtonFont = this.$$$getFont$$$(null, -1, 10, MOVRadioButton.getFont());
+        if (MOVRadioButtonFont != null) MOVRadioButton.setFont(MOVRadioButtonFont);
+        MOVRadioButton.setText("MOV");
+        mainPanel.add(MOVRadioButton);
+        label = new JLabel();
+        Font labelFont = this.$$$getFont$$$(null, -1, 10, label.getFont());
+        if (labelFont != null) label.setFont(labelFont);
+        label.setText("0000");
+        mainPanel.add(label);
     }
 
     /**
      * @noinspection ALL
      */
-    private Font $$$getFont$$$ (String fontName, int style, int size, Font currentFont) {
+    private Font $$$getFont$$$(String fontName, int style, int size, Font currentFont) {
         if (currentFont == null) return null;
         String resultName;
         if (fontName == null) {
-            resultName = currentFont.getName ();
+            resultName = currentFont.getName();
         } else {
-            Font testFont = new Font (fontName, Font.PLAIN, 10);
-            if (testFont.canDisplay ('a') && testFont.canDisplay ('1')) {
+            Font testFont = new Font(fontName, Font.PLAIN, 10);
+            if (testFont.canDisplay('a') && testFont.canDisplay('1')) {
                 resultName = fontName;
             } else {
-                resultName = currentFont.getName ();
+                resultName = currentFont.getName();
             }
         }
-        Font font = new Font (resultName, style >= 0 ? style : currentFont.getStyle (), size >= 0 ? size : currentFont.getSize ());
-        boolean isMac = System.getProperty ("os.name", "").toLowerCase (Locale.ENGLISH).startsWith ("mac");
-        Font fontWithFallback = isMac ? new Font (font.getFamily (), font.getStyle (), font.getSize ()) : new StyleContext ().getFont (font.getFamily (), font.getStyle (), font.getSize ());
-        return fontWithFallback instanceof FontUIResource ? fontWithFallback : new FontUIResource (fontWithFallback);
+        Font font = new Font(resultName, style >= 0 ? style : currentFont.getStyle(), size >= 0 ? size : currentFont.getSize());
+        boolean isMac = System.getProperty("os.name", "").toLowerCase(Locale.ENGLISH).startsWith("mac");
+        Font fontWithFallback = isMac ? new Font(font.getFamily(), font.getStyle(), font.getSize()) : new StyleContext().getFont(font.getFamily(), font.getStyle(), font.getSize());
+        return fontWithFallback instanceof FontUIResource ? fontWithFallback : new FontUIResource(fontWithFallback);
     }
 
     /**
      * @noinspection ALL
      */
-    public JComponent $$$getRootComponent$$$ () {
+    public JComponent $$$getRootComponent$$$() {
         return mainPanel;
     }
 
